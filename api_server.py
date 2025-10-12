@@ -69,6 +69,18 @@ class RouletteAPI:
             )
         ''')
         
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS chat_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                username TEXT NOT NULL,
+                message TEXT NOT NULL,
+                session_id TEXT,
+                message_type TEXT DEFAULT 'text',
+                FOREIGN KEY (session_id) REFERENCES team_sessions (session_id)
+            )
+        ''')
+        
         conn.commit()
         conn.close()
 
@@ -517,6 +529,124 @@ def get_realtime_feed():
     except Exception as e:
         return jsonify({'error': f'Ошибка получения ленты: {str(e)}'}), 500
 
+@app.route('/api/chat', methods=['GET'])
+def get_chat_messages():
+    """Получение сообщений чата"""
+    try:
+        session_id = request.args.get('session_id', 'default')
+        limit = request.args.get('limit', 50, type=int)
+        
+        conn = sqlite3.connect(api_manager.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT * FROM chat_messages 
+            WHERE session_id = ? OR session_id IS NULL
+            ORDER BY timestamp DESC 
+            LIMIT ?
+        ''', (session_id, limit))
+        
+        messages = []
+        for row in cursor.fetchall():
+            messages.append({
+                'id': row['id'],
+                'timestamp': row['timestamp'],
+                'username': row['username'],
+                'message': row['message'],
+                'session_id': row['session_id'],
+                'message_type': row['message_type']
+            })
+        
+        conn.close()
+        
+        # Возвращаем в обратном порядке (от старых к новым)
+        messages.reverse()
+        
+        return jsonify({
+            'messages': messages,
+            'count': len(messages),
+            'session_id': session_id
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Ошибка получения сообщений: {str(e)}'}), 500
+
+@app.route('/api/chat', methods=['POST'])
+def send_chat_message():
+    """Отправка сообщения в чат"""
+    try:
+        data = request.get_json()
+        
+        required_fields = ['username', 'message']
+        if not all(field in data for field in required_fields):
+            return jsonify({'error': 'Отсутствуют обязательные поля (username, message)'}), 400
+        
+        session_id = data.get('session_id', 'default')
+        message_type = data.get('message_type', 'text')
+        
+        conn = sqlite3.connect(api_manager.db_path)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO chat_messages (username, message, session_id, message_type)
+            VALUES (?, ?, ?, ?)
+        ''', (data['username'], data['message'], session_id, message_type))
+        
+        conn.commit()
+        message_id = cursor.lastrowid
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message_id': message_id,
+            'message': f'Сообщение от {data["username"]} отправлено',
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Ошибка отправки сообщения: {str(e)}'}), 500
+
+@app.route('/api/chat/users', methods=['GET'])
+def get_chat_users():
+    """Получение списка активных пользователей чата"""
+    try:
+        session_id = request.args.get('session_id', 'default')
+        hours_ago = request.args.get('hours', 24, type=int)
+        
+        since_time = datetime.now() - timedelta(hours=hours_ago)
+        
+        conn = sqlite3.connect(api_manager.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT DISTINCT username, MAX(timestamp) as last_seen
+            FROM chat_messages 
+            WHERE (session_id = ? OR session_id IS NULL) 
+            AND timestamp > ?
+            GROUP BY username
+            ORDER BY last_seen DESC
+        ''', (session_id, since_time.isoformat()))
+        
+        users = []
+        for row in cursor.fetchall():
+            users.append({
+                'username': row['username'],
+                'last_seen': row['last_seen']
+            })
+        
+        conn.close()
+        
+        return jsonify({
+            'users': users,
+            'count': len(users),
+            'session_id': session_id
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Ошибка получения пользователей: {str(e)}'}), 500
+
 if __name__ == '__main__':
     print("🎲 Запуск RULETTT Cloud API сервера...")
     print("📡 API доступен на: http://localhost:5000")
@@ -530,5 +660,9 @@ if __name__ == '__main__':
     print("   GET  /api/sessions - Список сессий")
     print("   GET  /api/export/<format> - Экспорт данных")
     print("   GET  /api/realtime/feed - Лента активности")
+    print("   💬 ЧАТ:")
+    print("   GET  /api/chat - Получить сообщения чата")
+    print("   POST /api/chat - Отправить сообщение")
+    print("   GET  /api/chat/users - Активные пользователи")
     
     app.run(debug=True, host='0.0.0.0', port=5000)
