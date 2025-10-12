@@ -1,0 +1,50 @@
+# GitPod конфигурация для RULETTT Roulette Data Collector
+image: gitpod/workspace-python
+
+ports:
+  - port: 8000
+    onOpen: notify
+    name: Python Web Server
+  - port: 5000
+    onOpen: open-browser
+    name: Flask App
+  - port: 3000
+    onOpen: notify  
+    name: Node.js App
+  - port: 8080
+    onOpen: notify
+    name: Alternative Server
+  - port: 8888
+    onOpen: open-browser
+    name: Jupyter Notebook
+
+tasks:
+  - name: Setup Environment
+    init: |
+      echo "🎲 Настройка RULETTT Roulette Collector..."
+      pip install -r requirements.txt
+      npm install
+      echo "✅ Среда готова для сбора данных рулетки!"
+    command: |
+      echo "🚀 RULETTT готов к работе!"
+      echo "📁 Файлы проекта:"
+      ls -la
+      echo ""
+      echo "🎯 Быстрый старт:"
+      echo "1. Откройте auto_collector_console_code.js"
+      echo "2. Скопируйте код в консоль браузера на сайте казино"
+      echo "3. Запустите console_to_analysis.py для анализа"
+      echo ""
+      echo "💡 Для веб-интерфейса: python -m http.server 8000"
+
+vscode:
+  extensions:
+    - ms-python.python
+    - ms-python.vscode-pylance
+    - ms-vsliveshare.vsliveshare
+    - ritwickdey.liveserver
+    - ms-vscode.vscode-json
+    - ms-vscode.vscode-typescript-next
+    - formulahendry.code-runner
+    - ms-python.debugpy
+    - ms-toolsai.jupyter

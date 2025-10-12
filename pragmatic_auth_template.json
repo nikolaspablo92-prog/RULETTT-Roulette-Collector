@@ -1,0 +1,41 @@
+{
+  "casino_name": "Pragmatic Play Casino",
+  "provider": "Pragmatic Play",
+  "connection_method": "api",
+  "api": {
+    "base_url": "https://promo.pragmaticplaylive.net",
+    "endpoints": {
+      "instant_points": "/api/v2/fetchinstantpoints",
+      "live_results": "/api/v2/live/results",
+      "history": "/api/v2/history",
+      "tables": "/api/v2/tables"
+    },
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "Accept": "application/json, text/plain, */*",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Content-Type": "application/json",
+      "Authorization": "ЗАМЕНИТЬ_НА_РЕАЛЬНЫЙ_ТОКЕН",
+      "X-API-Key": "ЗАМЕНИТЬ_ЕСЛИ_ЕСТЬ",
+      "Cookie": "ЗАМЕНИТЬ_НА_РЕАЛЬНЫЕ_COOKIES"
+    },
+    "auth": {
+      "type": "bearer_token",
+      "token": "ТОКЕН_ИЗ_БРАУЗЕРА",
+      "refresh_token": "ЕСЛИ_ЕСТЬ",
+      "expires_in": 3600
+    },
+    "timeout": 10
+  },
+  "game_params": {
+    "playerId": "ВАШЕ_ID",
+    "gameId": "roulette",
+    "tableId": "СТОЛ_ID",
+    "sessionToken": "ТОКЕН_СЕССИИ"
+  },
+  "betting": {
+    "base_bet": 100,
+    "max_bet": 10000,
+    "bankroll": 100000
+  }
+}

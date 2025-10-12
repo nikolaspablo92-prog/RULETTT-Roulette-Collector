@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.20.0",
+    "@types/node": "^24.7.2",
+    "axios": "^1.12.2",
+    "chromadb": "^3.0.17"
+  }
+}

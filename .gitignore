@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+Scripts/
+Lib/
+Include/
+pyvenv.cfg
+
+# Node.js  
+node_modules/
+package-lock.json
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Large files - keep only examples
+*.csv
+!*example*.csv
+!*template*.csv

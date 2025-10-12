@@ -1,0 +1,72 @@
+{
+  "name": "RULETTT Roulette Data Collector",
+  "image": "mcr.microsoft.com/vscode/devcontainers/python:3.11",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    },
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  "forwardPorts": [8000, 5000, 3000, 8080, 8888],
+  "portsAttributes": {
+    "8000": {
+      "label": "Python Web Server",
+      "onAutoForward": "notify"
+    },
+    "5000": {
+      "label": "Flask App",
+      "onAutoForward": "openBrowser"
+    },
+    "3000": {
+      "label": "Node.js App",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Alternative Web Server",
+      "onAutoForward": "notify"
+    },
+    "8888": {
+      "label": "Jupyter Notebook",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-vsliveshare.vsliveshare",
+        "ritwickdey.liveserver",
+        "ms-vscode.vscode-json",
+        "ms-vscode.vscode-typescript-next",
+        "formulahendry.code-runner",
+        "ms-python.debugpy",
+        "ms-toolsai.jupyter"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true,
+        "files.autoSave": "afterDelay",
+        "files.autoSaveDelay": 1000,
+        "liveServer.settings.donotVerifyTags": true,
+        "liveServer.settings.donotShowInfoMsg": true
+      }
+    }
+  },
+
+  "postCreateCommand": "pip install -r requirements.txt && npm install",
+  
+  "remoteUser": "vscode",
+  
+  "workspaceFolder": "/workspaces/RULETTT-Roulette-Collector",
+  
+  "mounts": [
+    "source=rulettt-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ]
+}
