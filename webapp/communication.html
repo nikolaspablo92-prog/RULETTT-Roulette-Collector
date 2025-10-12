@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤝 RULETTT - Командная Работа</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .communication-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            height: 100vh;
+            gap: 0;
+        }
+        
+        .sidebar {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .main-chat {
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .activity-panel {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .chat-header {
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 180px);
+        }
+        
+        .chat-input-area {
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .message.own {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .message.other {
+            background: rgba(255,255,255,0.1);
+            margin-right: auto;
+        }
+        
+        .message.system {
+            background: rgba(33, 150, 243, 0.2);
+            border-left: 4px solid #2196F3;
+            margin: 0 auto;
+            text-align: center;
+            font-style: italic;
+            max-width: 60%;
+        }
+        
+        .message-header {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .message-time {
+            font-size: 0.7em;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            resize: none;
+            max-height: 120px;
+            min-height: 44px;
+        }
+        
+        .input-field::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .send-btn {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .voice-btn, .video-btn, .screen-btn {
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            margin-left: 8px;
+        }
+        
+        .voice-btn:hover {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+        
+        .video-btn:hover {
+            background: rgba(33, 150, 243, 0.3);
+            border-color: #2196F3;
+        }
+        
+        .screen-btn:hover {
+            background: rgba(255, 152, 0, 0.3);
+            border-color: #FF9800;
+        }
+        
+        .voice-btn.active {
+            background: #4CAF50;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .video-btn.active {
+            background: #2196F3;
+        }
+        
+        .screen-btn.active {
+            background: #FF9800;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .team-list {
+            margin-bottom: 30px;
+        }
+        
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .team-member:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .member-avatar.online::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .member-info {
+            flex: 1;
+        }
+        
+        .member-name {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .member-status {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        
+        .quick-actions {
+            margin-top: 20px;
+        }
+        
+        .quick-actions h3 {
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+        
+        .action-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #4CAF50;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border-left: 3px solid #2196F3;
+        }
+        
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(33, 150, 243, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #2196F3;
+            flex-shrink: 0;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+        
+        .activity-description {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .activity-time {
+            font-size: 0.7em;
+            opacity: 0.6;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            margin-bottom: 10px;
+            max-width: 80px;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .file-upload input[type=file] {
+            display: none;
+        }
+        
+        .file-upload-btn {
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-btn:hover {
+            background: rgba(156, 39, 176, 0.3);
+            border-color: #9C27B0;
+        }
+        
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+        
+        .emoji-picker {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            max-width: 320px;
+        }
+        
+        .emoji {
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 20px;
+            transition: background 0.2s ease;
+        }
+        
+        .emoji:hover {
+            background: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="communication-container">
+        <!-- Боковая панель -->
+        <div class="sidebar">
+            <h2 style="margin-bottom: 20px;">👥 Команда</h2>
+            
+            <div class="team-list">
+                <div class="team-member" onclick="openDirectChat('me')">
+                    <div class="member-avatar online">Я</div>
+                    <div class="member-info">
+                        <div class="member-name">Вы (Администратор)</div>
+                        <div class="member-status">Онлайн • Активен</div>
+                    </div>
+                </div>
+                
+                <div class="team-member" onclick="openDirectChat('collector')">
+                    <div class="member-avatar online">К</div>
+                    <div class="member-info">
+                        <div class="member-name">Коллектор</div>
+                        <div class="member-status">Онлайн • Собирает данные</div>
+                    </div>
+                </div>
+                
+                <div class="team-member" onclick="openDirectChat('analyst')">
+                    <div class="member-avatar">А</div>
+                    <div class="member-info">
+                        <div class="member-name">Аналитик</div>
+                        <div class="member-status">Офлайн • 10 мин назад</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <h3>⚡ Быстрые Действия</h3>
+                <a href="#" class="action-btn" onclick="inviteNewMember()">👤 Пригласить участника</a>
+                <a href="#" class="action-btn" onclick="createMeeting()">📹 Создать встречу</a>
+                <a href="#" class="action-btn" onclick="shareScreen()">📺 Демонстрация экрана</a>
+                <a href="#" class="action-btn" onclick="shareFiles()">📁 Поделиться файлами</a>
+                <a href="#" class="action-btn" onclick="createTask()">✅ Создать задачу</a>
+            </div>
+        </div>
+        
+        <!-- Основной чат -->
+        <div class="main-chat">
+            <div class="chat-header">
+                <div>
+                    <h2>💬 Общий Чат RULETTT</h2>
+                    <p style="opacity: 0.7; font-size: 0.9em;">3 участника • 2 онлайн</p>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Голосовой чат">🎤</button>
+                    <button class="video-btn" id="videoBtn" onclick="toggleVideo()" title="Видеозвонок">📹</button>
+                    <button class="screen-btn" id="screenBtn" onclick="toggleScreen()" title="Демонстрация экрана">📺</button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message system">
+                    <div>🎲 Добро пожаловать в командный чат RULETTT!</div>
+                    <div class="message-time">Сегодня, 14:30</div>
+                </div>
+                
+                <div class="message other">
+                    <div class="message-header">Коллектор</div>
+                    <div>Привет! Я запустил сбор данных с Stake.com. Уже собрал 150 результатов спинов 🎲</div>
+                    <div class="message-time">14:32</div>
+                </div>
+                
+                <div class="message own">
+                    <div class="message-header">Вы</div>
+                    <div>Отлично! Я начну анализ стратегий. Можешь также подключить BC.Game?</div>
+                    <div class="message-time">14:33</div>
+                </div>
+                
+                <div class="message other">
+                    <div class="message-header">Коллектор</div>
+                    <div>Конечно! Сейчас подключу BC.Game. Параллельный сбор даст лучшие результаты 📊</div>
+                    <div class="message-time">14:35</div>
+                </div>
+                
+                <div class="message system">
+                    <div>📊 Аналитик присоединился к чату</div>
+                    <div class="message-time">14:40</div>
+                </div>
+                
+                <div class="message other" style="background: rgba(156, 39, 176, 0.2);">
+                    <div class="message-header">Аналитик</div>
+                    <div>Привет, команда! Проанализировал вчерашние данные. Мартингейл на красное показал +18.5% прибыли 💰</div>
+                    <div class="message-time">14:41</div>
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="chat-input">
+                    <div class="file-upload">
+                        <input type="file" id="fileInput" multiple accept="image/*,.pdf,.json,.csv">
+                        <label for="fileInput" class="file-upload-btn" title="Прикрепить файл">📎</label>
+                    </div>
+                    
+                    <textarea 
+                        class="input-field" 
+                        id="messageInput" 
+                        placeholder="Введите сообщение... (Enter для отправки, Shift+Enter для новой строки)"
+                        rows="1"
+                    ></textarea>
+                    
+                    <div style="position: relative;">
+                        <button class="voice-btn" onclick="toggleEmojiPicker()" title="Эмодзи">😊</button>
+                        <div class="emoji-picker" id="emojiPicker">
+                            <div class="emoji-grid">
+                                <span class="emoji" onclick="insertEmoji('😊')">😊</span>
+                                <span class="emoji" onclick="insertEmoji('👍')">👍</span>
+                                <span class="emoji" onclick="insertEmoji('🎲')">🎲</span>
+                                <span class="emoji" onclick="insertEmoji('💰')">💰</span>
+                                <span class="emoji" onclick="insertEmoji('📊')">📊</span>
+                                <span class="emoji" onclick="insertEmoji('🔥')">🔥</span>
+                                <span class="emoji" onclick="insertEmoji('⚡')">⚡</span>
+                                <span class="emoji" onclick="insertEmoji('✅')">✅</span>
+                                <span class="emoji" onclick="insertEmoji('❌')">❌</span>
+                                <span class="emoji" onclick="insertEmoji('🚀')">🚀</span>
+                                <span class="emoji" onclick="insertEmoji('💡')">💡</span>
+                                <span class="emoji" onclick="insertEmoji('🎯')">🎯</span>
+                                <span class="emoji" onclick="insertEmoji('🔬')">🔬</span>
+                                <span class="emoji" onclick="insertEmoji('📈')">📈</span>
+                                <span class="emoji" onclick="insertEmoji('📉')">📉</span>
+                                <span class="emoji" onclick="insertEmoji('⭐')">⭐</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">Отправить</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Панель активности -->
+        <div class="activity-panel">
+            <h3 style="margin-bottom: 20px;">📋 Активность</h3>
+            
+            <div class="activity-item">
+                <div class="activity-icon">🎲</div>
+                <div class="activity-content">
+                    <div class="activity-title">Новые данные</div>
+                    <div class="activity-description">Коллектор: +25 спинов с Stake.com</div>
+                    <div class="activity-time">2 минуты назад</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">📊</div>
+                <div class="activity-content">
+                    <div class="activity-title">Анализ завершен</div>
+                    <div class="activity-description">Аналитик: Стратегия Мартингейл</div>
+                    <div class="activity-time">5 минут назад</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">💬</div>
+                <div class="activity-content">
+                    <div class="activity-title">Новое сообщение</div>
+                    <div class="activity-description">Коллектор в общем чате</div>
+                    <div class="activity-time">7 минут назад</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">👤</div>
+                <div class="activity-content">
+                    <div class="activity-title">Вход в систему</div>
+                    <div class="activity-description">Аналитик присоединился</div>
+                    <div class="activity-time">15 минут назад</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">🔄</div>
+                <div class="activity-content">
+                    <div class="activity-title">Синхронизация</div>
+                    <div class="activity-description">Автосохранение данных</div>
+                    <div class="activity-time">30 минут назад</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h4 style="color: #4CAF50; margin-bottom: 15px;">🎯 Текущие Задачи</h4>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;">✅ Сбор данных Stake.com</div>
+                    <div style="font-size: 0.8em; opacity: 0.8;">Коллектор • В процессе</div>
+                    <div style="background: rgba(76, 175, 80, 0.3); height: 4px; border-radius: 2px; margin-top: 8px;">
+                        <div style="background: #4CAF50; height: 100%; width: 75%; border-radius: 2px;"></div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;">📊 Анализ стратегий</div>
+                    <div style="font-size: 0.8em; opacity: 0.8;">Аналитик • Завершено</div>
+                    <div style="background: rgba(76, 175, 80, 0.3); height: 4px; border-radius: 2px; margin-top: 8px;">
+                        <div style="background: #4CAF50; height: 100%; width: 100%; border-radius: 2px;"></div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;">🎯 Тестирование стратегий</div>
+                    <div style="font-size: 0.8em; opacity: 0.8;">Команда • Запланировано</div>
+                    <div style="background: rgba(255, 152, 0, 0.3); height: 4px; border-radius: 2px; margin-top: 8px;">
+                        <div style="background: #FF9800; height: 100%; width: 15%; border-radius: 2px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Уведомления -->
+    <div id="notificationToast" class="notification-toast"></div>
+    
+    <script>
+        let isVoiceActive = false;
+        let isVideoActive = false;
+        let isScreenActive = false;
+        
+        // Автозаполнение textarea
+        const messageInput = document.getElementById('messageInput');
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            
+            // Показываем индикатор печати
+            showTypingIndicator();
+        });
+        
+        // Отправка по Enter
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, 'own', 'Вы');
+                input.value = '';
+                input.style.height = 'auto';
+                
+                // Имитируем ответ через 2-5 секунд
+                setTimeout(() => {
+                    const responses = [
+                        'Понял, начинаю работу! 👍',
+                        'Отличная идея! Попробую это сделать 🚀',
+                        'Данные обновлены, проверьте результаты 📊',
+                        'Согласен, это повысит эффективность ⚡',
+                        'Анализ показывает хорошие результаты 💰'
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(randomResponse, 'other', 'Коллектор');
+                }, Math.random() * 3000 + 2000);
+            }
+        }
+        
+        function addMessage(text, type, author) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const now = new Date();
+            const time = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            
+            if (type !== 'system') {
+                messageDiv.innerHTML = `
+                    <div class="message-header">${author}</div>
+                    <div>${text}</div>
+                    <div class="message-time">${time}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div>${text}</div>
+                    <div class="message-time">${time}</div>
+                `;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Добавляем в активность
+            addActivity(`Новое сообщение от ${author}`, 'только что');
+        }
+        
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.style.display = 'block';
+            
+            clearTimeout(window.typingTimeout);
+            window.typingTimeout = setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 3000);
+        }
+        
+        function toggleVoice() {
+            const btn = document.getElementById('voiceBtn');
+            isVoiceActive = !isVoiceActive;
+            
+            if (isVoiceActive) {
+                btn.classList.add('active');
+                btn.innerHTML = '🎤';
+                showNotification('🎤 Голосовой чат включен');
+                addMessage('Голосовой чат активирован', 'system');
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '🔇';
+                showNotification('🔇 Голосовой чат отключен');
+                addMessage('Голосовой чат деактивирован', 'system');
+            }
+        }
+        
+        function toggleVideo() {
+            const btn = document.getElementById('videoBtn');
+            isVideoActive = !isVideoActive;
+            
+            if (isVideoActive) {
+                btn.classList.add('active');
+                showNotification('📹 Видеозвонок начат');
+                addMessage('Видеоконференция начата', 'system');
+            } else {
+                btn.classList.remove('active');
+                showNotification('📹 Видеозвонок завершен');
+                addMessage('Видеоконференция завершена', 'system');
+            }
+        }
+        
+        function toggleScreen() {
+            const btn = document.getElementById('screenBtn');
+            isScreenActive = !isScreenActive;
+            
+            if (isScreenActive) {
+                btn.classList.add('active');
+                showNotification('📺 Демонстрация экрана начата');
+                addMessage('Демонстрация экрана активирована', 'system');
+            } else {
+                btn.classList.remove('active');
+                showNotification('📺 Демонстрация экрана завершена');
+                addMessage('Демонстрация экрана деактивирована', 'system');
+            }
+        }
+        
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emojiPicker');
+            picker.style.display = picker.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        function insertEmoji(emoji) {
+            const input = document.getElementById('messageInput');
+            const cursorPos = input.selectionStart;
+            const textBefore = input.value.substring(0, cursorPos);
+            const textAfter = input.value.substring(cursorPos);
+            input.value = textBefore + emoji + textAfter;
+            input.selectionStart = input.selectionEnd = cursorPos + emoji.length;
+            input.focus();
+            
+            document.getElementById('emojiPicker').style.display = 'none';
+        }
+        
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        function addActivity(title, time) {
+            // Добавляем активность в панель (упрощенная версия)
+            console.log(`Новая активность: ${title} - ${time}`);
+        }
+        
+        function inviteNewMember() {
+            const email = prompt('Введите email или GitHub username нового участника:');
+            if (email) {
+                showNotification(`📧 Приглашение отправлено: ${email}`);
+                addMessage(`Приглашение отправлено участнику: ${email}`, 'system');
+            }
+        }
+        
+        function createMeeting() {
+            showNotification('📹 Создание встречи...');
+            addMessage('Ссылка на встречу: https://meet.rulettt.com/room/123456', 'system');
+        }
+        
+        function shareScreen() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+                navigator.mediaDevices.getDisplayMedia({ video: true })
+                    .then(stream => {
+                        showNotification('📺 Демонстрация экрана начата');
+                        addMessage('Начата демонстрация экрана', 'system');
+                    })
+                    .catch(err => {
+                        showNotification('❌ Ошибка доступа к экрану');
+                    });
+            } else {
+                showNotification('❌ Демонстрация экрана не поддерживается');
+            }
+        }
+        
+        function shareFiles() {
+            document.getElementById('fileInput').click();
+        }
+        
+        function createTask() {
+            const task = prompt('Введите описание новой задачи:');
+            if (task) {
+                showNotification('✅ Задача создана');
+                addMessage(`Новая задача создана: ${task}`, 'system');
+            }
+        }
+        
+        function openDirectChat(userId) {
+            showNotification(`💬 Открыт личный чат с ${userId}`);
+        }
+        
+        // Обработка загрузки файлов
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                addMessage(`📎 Файл загружен: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`, 'own', 'Вы');
+            });
+        });
+        
+        // Закрытие emoji picker при клике вне его
+        document.addEventListener('click', function(e) {
+            const picker = document.getElementById('emojiPicker');
+            const button = e.target.closest('.voice-btn');
+            if (!picker.contains(e.target) && !button) {
+                picker.style.display = 'none';
+            }
+        });
+        
+        // Уведомления о новой активности каждые 30 секунд
+        setInterval(() => {
+            const activities = [
+                'Новые данные рулетки получены',
+                'Обновление стратегии завершено',
+                'Синхронизация с облаком',
+                'Автоматическое сохранение'
+            ];
+            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+            addActivity(randomActivity, 'сейчас');
+        }, 30000);
+        
+        console.log('🤝 RULETTT Communication System готова к работе!');
+        console.log('💬 Чат, голосовая связь и видеозвонки активны');
+        console.log('📊 Система уведомлений запущена');
+    </script>
+</body>
+</html>

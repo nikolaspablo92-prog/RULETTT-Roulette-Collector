@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RULETTT Mobile">
+    <title>🎲 RULETTT Mobile - Мобильный Коллектор</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Мобильная шапка */
+        .mobile-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Основной контент */
+        .mobile-container {
+            padding: 80px 15px 20px;
+            max-width: 100%;
+        }
+
+        /* Карточки статистики */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #00ff88;
+        }
+
+        .stat-card p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Коллектор казино */
+        .casino-collector {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .casino-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .casino-btn {
+            min-width: 80px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            padding: 0 15px;
+        }
+
+        .casino-btn.active {
+            background: #00ff88;
+            color: #1a1a2e;
+            border-color: #00ff88;
+        }
+
+        .collector-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff6b6b;
+        }
+
+        .status-dot.active {
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #1a1a2e;
+        }
+
+        .stop-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Последние результаты */
+        .recent-results {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .results-header h3 {
+            font-size: 16px;
+        }
+
+        .clear-btn {
+            font-size: 12px;
+            color: #ff6b6b;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .results-list {
+            max-height: 200px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+        }
+
+        .result-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .red { background: #e74c3c; color: white; }
+        .black { background: #2c3e50; color: white; }
+        .green { background: #27ae60; color: white; }
+
+        .result-time {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+
+        /* Нижняя панель навигации */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 8px;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item.active {
+            color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Модальные окна */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Настройки */
+        .settings-group {
+            margin-bottom: 25px;
+        }
+
+        .settings-group h4 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #00ff88;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-toggle {
+            width: 50px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .setting-toggle.active {
+            background: #00ff88;
+        }
+
+        .toggle-slider {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .setting-toggle.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        /* Анимации */
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            right: 15px;
+            background: rgba(0, 255, 136, 0.9);
+            color: #1a1a2e;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            z-index: 1500;
+            transform: translateY(-100px);
+            transition: transform 0.3s ease-out;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        /* Адаптация для iPhone */
+        @supports (padding: max(0px)) {
+            .mobile-header {
+                padding-top: max(15px, env(safe-area-inset-top));
+                height: calc(60px + max(0px, env(safe-area-inset-top)));
+            }
+            
+            .mobile-container {
+                padding-top: calc(80px + max(0px, env(safe-area-inset-top)));
+            }
+            
+            .bottom-nav {
+                padding-bottom: max(0px, env(safe-area-inset-bottom));
+                height: calc(70px + max(0px, env(safe-area-inset-bottom)));
+            }
+        }
+
+        /* Темная тема */
+        @media (prefers-color-scheme: dark) {
+            .modal-content {
+                background: #0f0f23;
+            }
+        }
+
+        /* Ландшафтная ориентация */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .mobile-header {
+                height: 50px;
+            }
+            
+            .mobile-container {
+                padding-top: 70px;
+            }
+            
+            .bottom-nav {
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Мобильная шапка -->
+    <header class="mobile-header">
+        <h1>🎲 RULETTT Mobile</h1>
+        <div class="header-actions">
+            <button class="header-btn" onclick="showNotification('📊 Статистика обновлена!')">📊</button>
+            <button class="header-btn" onclick="openModal('settingsModal')">⚙️</button>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="mobile-container">
+        <!-- Статистика -->
+        <div class="stats-grid fade-in">
+            <div class="stat-card">
+                <h3 id="totalSpins">0</h3>
+                <p>Всего спинов</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="sessionTime">00:00</h3>
+                <p>Время сессии</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="redCount">0</h3>
+                <p>Красные</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="blackCount">0</h3>
+                <p>Черные</p>
+            </div>
+        </div>
+
+        <!-- Коллектор -->
+        <div class="casino-collector fade-in">
+            <div class="casino-selector">
+                <button class="casino-btn active" data-casino="stake">Stake</button>
+                <button class="casino-btn" data-casino="bcgame">BC.Game</button>
+                <button class="casino-btn" data-casino="roobet">Roobet</button>
+                <button class="casino-btn" data-casino="rollbit">Rollbit</button>
+            </div>
+
+            <div class="collector-status">
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Остановлен</span>
+                </div>
+                <button class="control-btn start-btn" id="controlBtn" onclick="toggleCollector()">
+                    Запустить
+                </button>
+            </div>
+        </div>
+
+        <!-- Последние результаты -->
+        <div class="recent-results fade-in">
+            <div class="results-header">
+                <h3>Последние результаты</h3>
+                <button class="clear-btn" onclick="clearResults()">Очистить</button>
+            </div>
+            <div class="results-list" id="resultsList">
+                <div class="result-item">
+                    <div class="result-number red">32</div>
+                    <div>
+                        <div>Stake.com</div>
+                        <div class="result-time">только что</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Нижняя навигация -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-tab="collector">
+            <div class="nav-icon">🎲</div>
+            <div>Коллектор</div>
+        </a>
+        <a href="#" class="nav-item" data-tab="analytics">
+            <div class="nav-icon">📈</div>
+            <div>Аналитика</div>
+        </a>
+        <a href="#" class="nav-item" data-tab="strategies">
+            <div class="nav-icon">🎯</div>
+            <div>Стратегии</div>
+        </a>
+        <a href="#" class="nav-item" data-tab="team">
+            <div class="nav-icon">👥</div>
+            <div>Команда</div>
+        </a>
+    </nav>
+
+    <!-- Модальное окно настроек -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ Настройки</h3>
+                <button class="modal-close" onclick="closeModal('settingsModal')">×</button>
+            </div>
+
+            <div class="settings-group">
+                <h4>Сбор данных</h4>
+                <div class="setting-item">
+                    <span>Автосохранение</span>
+                    <div class="setting-toggle active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>Звуковые уведомления</span>
+                    <div class="setting-toggle" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>Вибрация</span>
+                    <div class="setting-toggle active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h4>Интерфейс</h4>
+                <div class="setting-item">
+                    <span>Темная тема</span>
+                    <div class="setting-toggle active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>Полноэкранный режим</span>
+                    <div class="setting-toggle" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h4>Синхронизация</h4>
+                <div class="setting-item">
+                    <span>Облачное хранение</span>
+                    <div class="setting-toggle active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>Автоэкспорт</span>
+                    <div class="setting-toggle" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомления -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Глобальные переменные
+        let isCollecting = false;
+        let sessionStartTime = null;
+        let totalSpins = 0;
+        let redCount = 0;
+        let blackCount = 0;
+        let greenCount = 0;
+        let selectedCasino = 'stake';
+        let sessionTimer = null;
+        let collectorInterval = null;
+
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadStoredData();
+            setupEventListeners();
+            checkPWASupport();
+        });
+
+        function initializeApp() {
+            console.log('🎲 RULETTT Mobile инициализация...');
+            
+            // Проверяем поддержку Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ Service Worker зарегистрирован'))
+                    .catch(err => console.log('❌ Service Worker ошибка:', err));
+            }
+
+            // Устанавливаем viewport height для мобильных браузеров
+            setViewportHeight();
+            window.addEventListener('resize', setViewportHeight);
+        }
+
+        function setViewportHeight() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+
+        function checkPWASupport() {
+            // Проверяем возможность установки PWA
+            let deferredPrompt;
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                showInstallPrompt();
+            });
+        }
+
+        function showInstallPrompt() {
+            showNotification('📱 Установите приложение на главный экран!');
+        }
+
+        function setupEventListeners() {
+            // Навигация
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchTab(item.dataset.tab);
+                });
+            });
+
+            // Выбор казино
+            document.querySelectorAll('.casino-btn').forEach(btn => {
+                btn.addEventListener('click', () => selectCasino(btn.dataset.casino));
+            });
+
+            // Предотвращаем масштабирование при двойном тапе
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+
+        function loadStoredData() {
+            // Загружаем сохраненные данные
+            const savedData = localStorage.getItem('rulettt_mobile_data');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                totalSpins = data.totalSpins || 0;
+                redCount = data.redCount || 0;
+                blackCount = data.blackCount || 0;
+                greenCount = data.greenCount || 0;
+                updateStats();
+            }
+        }
+
+        function saveData() {
+            const data = {
+                totalSpins,
+                redCount,
+                blackCount,
+                greenCount,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('rulettt_mobile_data', JSON.stringify(data));
+        }
+
+        function selectCasino(casino) {
+            selectedCasino = casino;
+            
+            // Обновляем UI
+            document.querySelectorAll('.casino-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-casino="${casino}"]`).classList.add('active');
+            
+            showNotification(`🎰 Выбрано казино: ${casino.toUpperCase()}`);
+        }
+
+        function toggleCollector() {
+            if (isCollecting) {
+                stopCollector();
+            } else {
+                startCollector();
+            }
+        }
+
+        function startCollector() {
+            isCollecting = true;
+            sessionStartTime = Date.now();
+            
+            // Обновляем UI
+            document.getElementById('statusDot').classList.add('active');
+            document.getElementById('statusText').textContent = `Собираю с ${selectedCasino.toUpperCase()}`;
+            document.getElementById('controlBtn').textContent = 'Остановить';
+            document.getElementById('controlBtn').className = 'control-btn stop-btn';
+            
+            // Запускаем таймер сессии
+            sessionTimer = setInterval(updateSessionTime, 1000);
+            
+            // Запускаем сбор данных
+            collectorInterval = setInterval(collectData, 30000); // Каждые 30 секунд
+            
+            // Вибрация при запуске
+            if (navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+            
+            showNotification('🚀 Коллектор запущен!');
+            console.log(`🎲 Коллектор запущен для ${selectedCasino}`);
+        }
+
+        function stopCollector() {
+            isCollecting = false;
+            
+            // Очищаем интервалы
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+                sessionTimer = null;
+            }
+            
+            if (collectorInterval) {
+                clearInterval(collectorInterval);
+                collectorInterval = null;
+            }
+            
+            // Обновляем UI
+            document.getElementById('statusDot').classList.remove('active');
+            document.getElementById('statusText').textContent = 'Остановлен';
+            document.getElementById('controlBtn').textContent = 'Запустить';
+            document.getElementById('controlBtn').className = 'control-btn start-btn';
+            
+            showNotification('⏹️ Коллектор остановлен');
+            console.log('🛑 Коллектор остановлен');
+        }
+
+        function collectData() {
+            // Симуляция сбора данных (в реальном приложении здесь будет API запрос)
+            const number = Math.floor(Math.random() * 37); // 0-36
+            let color;
+            
+            if (number === 0) {
+                color = 'green';
+                greenCount++;
+            } else if ([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(number)) {
+                color = 'red';
+                redCount++;
+            } else {
+                color = 'black';
+                blackCount++;
+            }
+            
+            totalSpins++;
+            
+            // Добавляем результат в список
+            addResult(selectedCasino, number, color);
+            
+            // Обновляем статистику
+            updateStats();
+            
+            // Сохраняем данные
+            saveData();
+            
+            // Вибрация при новом результате
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            console.log(`🎲 Новый спин: ${number} (${color}) с ${selectedCasino}`);
+        }
+
+        function addResult(casino, number, color) {
+            const resultsList = document.getElementById('resultsList');
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item fade-in';
+            
+            resultItem.innerHTML = `
+                <div class="result-number ${color}">${number}</div>
+                <div>
+                    <div>${casino.charAt(0).toUpperCase() + casino.slice(1)}</div>
+                    <div class="result-time">только что</div>
+                </div>
+            `;
+            
+            // Добавляем в начало списка
+            resultsList.insertBefore(resultItem, resultsList.firstChild);
+            
+            // Ограничиваем количество результатов
+            const items = resultsList.querySelectorAll('.result-item');
+            if (items.length > 20) {
+                items[items.length - 1].remove();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalSpins').textContent = totalSpins;
+            document.getElementById('redCount').textContent = redCount;
+            document.getElementById('blackCount').textContent = blackCount;
+        }
+
+        function updateSessionTime() {
+            if (!sessionStartTime) return;
+            
+            const elapsed = Date.now() - sessionStartTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            
+            document.getElementById('sessionTime').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function clearResults() {
+            if (confirm('Очистить все результаты?')) {
+                document.getElementById('resultsList').innerHTML = '';
+                totalSpins = 0;
+                redCount = 0;
+                blackCount = 0;
+                greenCount = 0;
+                updateStats();
+                saveData();
+                showNotification('🗑️ Результаты очищены');
+            }
+        }
+
+        function switchTab(tab) {
+            // Обновляем активную вкладку
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            
+            // Здесь можно добавить логику переключения контента
+            showNotification(`📱 Вкладка: ${tab}`);
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleSetting(toggle) {
+            toggle.classList.toggle('active');
+            
+            // Вибрация при переключении
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Обработка фокуса/потери фокуса приложения
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                console.log('📱 Приложение в фоне');
+            } else {
+                console.log('📱 Приложение активно');
+                // Обновляем данные при возвращении в приложение
+                if (isCollecting) {
+                    collectData();
+                }
+            }
+        });
+
+        // Обработка ошибок
+        window.addEventListener('error', function(e) {
+            console.error('❌ Ошибка приложения:', e.error);
+            showNotification('❌ Произошла ошибка, перезапустите приложение');
+        });
+
+        // Инициализация при загрузке
+        console.log('🎲 RULETTT Mobile готов к работе!');
+    </script>
+</body>
+</html>
