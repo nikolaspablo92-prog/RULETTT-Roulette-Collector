@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 RULETTT - Общий Чат</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .username-input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        .username-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .chat-status {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+        
+        .message.own {
+            background: rgba(76, 175, 80, 0.8);
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .message.other {
+            background: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+        }
+        
+        .message.system {
+            background: rgba(33, 150, 243, 0.2);
+            border-left: 4px solid #2196f3;
+            align-self: center;
+            text-align: center;
+            font-style: italic;
+            max-width: 60%;
+        }
+        
+        .message-header {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .message-time {
+            font-size: 0.7em;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+        
+        .chat-input-area {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+        }
+        
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .send-btn {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .online-users {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+        }
+        
+        .user-avatar {
+            width: 20px;
+            height: 20px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+        
+        .connection-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .connected {
+            background: #4caf50;
+            animation: pulse 2s infinite;
+        }
+        
+        .disconnected {
+            background: #f44336;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <div>
+            <h2>💬 Общий Чат RULETTT</h2>
+            <div class="user-info">
+                <label>Ваше имя:</label>
+                <input 
+                    type="text" 
+                    id="usernameInput" 
+                    class="username-input"
+                    placeholder="Введите имя..." 
+                    onchange="updateUsername()"
+                >
+            </div>
+        </div>
+        <div>
+            <span class="connection-indicator" id="connectionIndicator"></span>
+            <span class="chat-status" id="chatStatus">Подключение...</span>
+        </div>
+    </div>
+    
+    <div class="online-users" id="onlineUsers">
+        <strong>👥 Онлайн пользователи:</strong>
+        <div id="usersList">Загрузка...</div>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <div class="loading">Загрузка сообщений...</div>
+    </div>
+    
+    <div class="chat-input-area">
+        <div class="chat-input">
+            <textarea 
+                class="input-field" 
+                id="messageInput" 
+                placeholder="Введите сообщение... (Enter для отправки)"
+                rows="1"
+            ></textarea>
+            <button class="send-btn" onclick="sendMessage()">Отправить</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':5000';
+        let lastMessageCount = 0;
+        
+        // Функции для работы с API
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            const username = document.getElementById('usernameInput').value.trim() || 'Аноним';
+            
+            if (!message) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        message: message,
+                        session_id: 'rulettt_main_chat'
+                    })
+                });
+                
+                if (response.ok) {
+                    input.value = '';
+                    input.style.height = 'auto';
+                    console.log('✅ Сообщение отправлено');
+                    // Сразу обновляем чат
+                    loadChatMessages();
+                } else {
+                    throw new Error('Ошибка отправки');
+                }
+                
+            } catch (error) {
+                console.error('❌ Ошибка:', error);
+                addSystemMessage('⚠️ Ошибка отправки сообщения');
+                updateConnectionStatus(false, 'Ошибка соединения');
+            }
+        }
+        
+        async function loadChatMessages() {
+            try {
+                const response = await fetch(`${API_BASE}/api/chat?session_id=rulettt_main_chat&limit=50`);
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки');
+                }
+                
+                const data = await response.json();
+                
+                // Обновляем только если есть новые сообщения
+                if (data.count !== lastMessageCount) {
+                    displayMessages(data.messages);
+                    lastMessageCount = data.count;
+                }
+                
+                updateConnectionStatus(true, `💬 ${data.count} сообщений`);
+                
+            } catch (error) {
+                console.error('❌ Ошибка загрузки:', error);
+                updateConnectionStatus(false, 'Ошибка подключения');
+            }
+        }
+        
+        async function loadActiveUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/api/chat/users?session_id=rulettt_main_chat`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayUsers(data.users);
+                }
+                
+            } catch (error) {
+                console.error('❌ Ошибка загрузки пользователей:', error);
+            }
+        }
+        
+        // Функции отображения
+        function displayMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            const currentUsername = document.getElementById('usernameInput').value.trim() || 'Аноним';
+            
+            container.innerHTML = '';
+            
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                const messageType = msg.username === currentUsername ? 'own' : 'other';
+                messageDiv.className = `message ${messageType}`;
+                
+                const time = new Date(msg.timestamp).toLocaleTimeString('ru-RU', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">${msg.username}</div>
+                    <div>${escapeHtml(msg.message)}</div>
+                    <div class="message-time">${time}</div>
+                `;
+                
+                container.appendChild(messageDiv);
+            });
+            
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function displayUsers(users) {
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<div>Нет активных пользователей</div>';
+                return;
+            }
+            
+            const usersHtml = users.map(user => `
+                <div class="user-item">
+                    <div class="user-avatar">👤</div>
+                    <span>${escapeHtml(user.username)}</span>
+                </div>
+            `).join('');
+            
+            usersList.innerHTML = usersHtml;
+        }
+        
+        function addSystemMessage(text) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            
+            const time = new Date().toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            messageDiv.innerHTML = `
+                <div>${text}</div>
+                <div class="message-time">${time}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function updateConnectionStatus(isConnected, message) {
+            const indicator = document.getElementById('connectionIndicator');
+            const status = document.getElementById('chatStatus');
+            
+            indicator.className = `connection-indicator ${isConnected ? 'connected' : 'disconnected'}`;
+            status.textContent = message;
+        }
+        
+        function updateUsername() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (username) {
+                localStorage.setItem('rulettt_username', username);
+                addSystemMessage(`Имя изменено на: ${username}`);
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Обработчики событий
+        document.getElementById('messageInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загружаем сохраненное имя
+            const savedUsername = localStorage.getItem('rulettt_username');
+            if (savedUsername) {
+                document.getElementById('usernameInput').value = savedUsername;
+            }
+            
+            // Первоначальная загрузка
+            updateConnectionStatus(false, 'Подключение к серверу...');
+            loadChatMessages();
+            loadActiveUsers();
+            
+            // Автообновление
+            setInterval(loadChatMessages, 3000);  // Сообщения каждые 3 сек
+            setInterval(loadActiveUsers, 15000);  // Пользователи каждые 15 сек
+            
+            console.log('💬 Общий чат RULETTT готов к работе!');
+        });
+    </script>
+</body>
+</html>
