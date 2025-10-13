@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>рџ”ђ РђРґРјРёРЅ-РїР°РЅРµР»СЊ | RULETTT BOT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102,126,234,0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .hidden-mode-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .features {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .feature-item::before {
+            content: "вњ“";
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 12px;
+            font-weight: bold;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>рџ¤– RULETTT BOT</h1>
+            <p>РђРґРјРёРЅ-РїР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">рџ‘¤ Р›РѕРіРёРЅ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°</label>
+                <input type="text" id="username" name="username" 
+                       placeholder="admin" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">рџ”’ РџР°СЂРѕР»СЊ</label>
+                <input type="password" id="password" name="password" 
+                       placeholder="Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ" required autocomplete="current-password">
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="hiddenMode" name="hiddenMode">
+                <label for="hiddenMode">
+                    рџ•¶пёЏ РЎРєСЂС‹С‚С‹Р№ СЂРµР¶РёРј 
+                    <span class="hidden-mode-badge">Р‘РµР· Р»РѕРіРёСЂРѕРІР°РЅРёСЏ</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn">рџљЂ Р’РѕР№С‚Рё РІ СЃРёСЃС‚РµРјСѓ</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p class="mt-10-gray">РђСѓС‚РµРЅС‚РёС„РёРєР°С†РёСЏ...</p>
+        </div>
+
+        <div class="divider">
+            <span>Р’РѕР·РјРѕР¶РЅРѕСЃС‚Рё Р°РґРјРёРЅ-РїР°РЅРµР»Рё</span>
+        </div>
+
+        <div class="features">
+            <div class="feature-item">РЈРїСЂР°РІР»РµРЅРёРµ РІСЂРµРјРµРЅРЅС‹РјРё РєР»СЋС‡Р°РјРё РґРѕСЃС‚СѓРїР°</div>
+            <div class="feature-item">РљРѕРЅС‚СЂРѕР»СЊ Р±РѕС‚Р°-СЃРёРјСѓР»СЏС‚РѕСЂР°</div>
+            <div class="feature-item">РџСЂРѕСЃРјРѕС‚СЂ СЃС‚Р°С‚РёСЃС‚РёРєРё Рё Р»РѕРіРѕРІ</div>
+            <div class="feature-item">РЈРїСЂР°РІР»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏРјРё</div>
+        </div>
+    </div>
+
+    <script>
+        // API endpoint
+        const API_BASE = 'http://localhost:5000/api';
+
+        // Р­Р»РµРјРµРЅС‚С‹ DOM
+        const loginForm = document.getElementById('loginForm');
+        const alertBox = document.getElementById('alert');
+        const loadingBox = document.getElementById('loading');
+
+        // РџРѕРєР°Р· СѓРІРµРґРѕРјР»РµРЅРёСЏ
+        function showAlert(message, type = 'info') {
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type}`;
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+
+        // РћР±СЂР°Р±РѕС‚РєР° РІС…РѕРґР°
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const hiddenMode = document.getElementById('hiddenMode').checked;
+
+            // РџРѕРєР°Р·С‹РІР°РµРј Р·Р°РіСЂСѓР·РєСѓ
+            loginForm.style.display = 'none';
+            loadingBox.style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        hidden_mode: hiddenMode
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.token) {
+                    // РЎРѕС…СЂР°РЅСЏРµРј С‚РѕРєРµРЅ
+                    localStorage.setItem('admin_token', data.token);
+                    localStorage.setItem('admin_user', JSON.stringify(data.user));
+                    
+                    showAlert('вњ… Р’С…РѕРґ РІС‹РїРѕР»РЅРµРЅ СѓСЃРїРµС€РЅРѕ!', 'success');
+                    
+                    // РџРµСЂРµРЅР°РїСЂР°РІР»РµРЅРёРµ С‡РµСЂРµР· 1 СЃРµРєСѓРЅРґСѓ
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    showAlert('вќЊ ' + (data.message || 'РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ'), 'error');
+                    loginForm.style.display = 'block';
+                    loadingBox.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('РћС€РёР±РєР° РІС…РѕРґР°:', error);
+                showAlert('вќЊ РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє СЃРµСЂРІРµСЂСѓ. РЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ API Р·Р°РїСѓС‰РµРЅ.', 'error');
+                loginForm.style.display = 'block';
+                loadingBox.style.display = 'none';
+            }
+        });
+
+        // РџСЂРѕРІРµСЂРєР° СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ СЃРµСЃСЃРёРё
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('admin_token');
+            if (token) {
+                // РџСЂРѕРІРµСЂСЏРµРј РІР°Р»РёРґРЅРѕСЃС‚СЊ С‚РѕРєРµРЅР°
+                fetch(`${API_BASE}/admin/verify`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.valid) {
+                        window.location.href = 'dashboard.html';
+                    }
+                })
+                .catch(() => {
+                    // РўРѕРєРµРЅ РЅРµРІР°Р»РёРґРµРЅ, РѕСЃС‚Р°С‘РјСЃСЏ РЅР° СЃС‚СЂР°РЅРёС†Рµ РІС…РѕРґР°
+                    localStorage.removeItem('admin_token');
+                    localStorage.removeItem('admin_user');
+                });
+            }
+        });
+
+        // РђРІС‚РѕР·Р°РїРѕР»РЅРµРЅРёРµ РґР»СЏ РґРµРјРѕ (СѓР±СЂР°С‚СЊ РІ РїСЂРѕРґР°РєС€РµРЅРµ!)
+        if (window.location.hostname === 'localhost') {
+            document.getElementById('username').value = 'admin';
+            // document.getElementById('password').value = 'demo'; // Р—Р°РєРѕРјРјРµРЅС‚РёСЂРѕРІР°РЅРѕ РґР»СЏ Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё
+        }
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>рџЋ›пёЏ RULETTT Control Panel</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        .link { color: #64b5f6; }
+        .hidden { display: none; }
+        .status-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            padding: 15px 20px;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn.info { background: linear-gradient(45deg, #2196f3, #1976d2); }
+        .btn.warning { background: linear-gradient(45deg, #ff9800, #f57c00); }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            background: rgba(0,0,0,0.2); 
+            border-radius: 5px; 
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>рџЋ›пёЏ RULETTT Control Panel</h1>
+        <p>РџР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ СЃРёСЃС‚РµРјРѕР№ RULETTT - РїСЂРѕСЃС‚Р°СЏ РІРµСЂСЃРёСЏ</p>
+        
+        <div class="status-card">
+            <h3>рџ“Љ РЎС‚Р°С‚СѓСЃ СЃРёСЃС‚РµРјС‹</h3>
+            <div class="status">
+                <div>рџ”Ґ API Server: <span id="apiStatus">РџСЂРѕРІРµСЂСЏРµРј...</span></div>
+                <div>рџЊђ Web Server: <span id="webStatus">РђРєС‚РёРІРµРЅ</span></div>
+                <div>рџ¤– AI Assistant: <span id="aiStatus">РџСЂРѕРІРµСЂСЏРµРј...</span></div>
+                <div>вЏ° Р’СЂРµРјСЏ: <span id="currentTime"></span></div>
+            </div>
+        </div>
+        
+        <div class="status-card">
+            <h3>рџ–ҐпёЏ РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃРёСЃС‚РµРјРµ</h3>
+            <div class="status">
+                <strong>IP Р°РґСЂРµСЃ:</strong> 192.168.88.216<br>
+                <strong>API РїРѕСЂС‚:</strong> 5000<br>
+                <strong>Web РїРѕСЂС‚:</strong> 8080<br>
+                <strong>РЎРёСЃС‚РµРјР°:</strong> Windows 11
+            </div>
+        </div>
+        
+        <div class="button-grid">
+            <a href="ai_chat_test.html" class="btn info">
+                рџ§Є РўРµСЃС‚ AI
+            </a>
+            <a href="global_chat.html" class="btn">
+                рџ’¬ Р§Р°С‚ РєРѕРјР°РЅРґС‹
+            </a>
+            <a href="dashboard.html" class="btn warning">
+                рџ“Љ Р”Р°С€Р±РѕСЂРґ
+            </a>
+            <button onclick="checkAPI()" class="btn info">
+                рџ”„ РџСЂРѕРІРµСЂРёС‚СЊ API
+            </button>
+            <button onclick="testAI()" class="btn">
+                рџ¤– РўРµСЃС‚ AI
+            </button>
+            <button onclick="showInfo()" class="btn warning">
+                в„№пёЏ РРЅС„РѕСЂРјР°С†РёСЏ
+            </button>
+        </div>
+        
+        <div class="status-card">
+            <h3>рџЊђ Р”Р»СЏ macOS РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№</h3>
+            <p><strong>Р’СЃРµ РёРЅС‚РµСЂС„РµР№СЃС‹ РґРѕСЃС‚СѓРїРЅС‹ РїРѕ Р°РґСЂРµСЃР°Рј:</strong></p>
+            <ul>
+                <li>рџ§Є РўРµСЃС‚ AI: <a href="http://192.168.88.216:8080/ai_chat_test.html" class="link">http://192.168.88.216:8080/ai_chat_test.html</a></li>
+                <li>рџ’¬ Р§Р°С‚: <a href="http://192.168.88.216:8080/global_chat.html" class="link">http://192.168.88.216:8080/global_chat.html</a></li>
+                <li>рџ“Љ Р”Р°С€Р±РѕСЂРґ: <a href="http://192.168.88.216:8080/dashboard.html" class="link">http://192.168.88.216:8080/dashboard.html</a></li>
+            </ul>
+        </div>
+        
+        <div id="testResults" class="status-card hidden">
+            <h3>рџ§Є Р РµР·СѓР»СЊС‚Р°С‚С‹ С‚РµСЃС‚РѕРІ</h3>
+            <div id="results" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        // РћРїСЂРµРґРµР»СЏРµРј API Р±Р°Р·РѕРІС‹Р№ URL РґРёРЅР°РјРёС‡РµСЃРєРё
+        const currentHost = window.location.hostname;
+        const API_BASE = `http://${currentHost}:5000`;
+        
+        console.log('рџљЂ Control Panel Р·Р°РіСЂСѓР¶РµРЅ');
+        console.log('рџ“Ў API Base:', API_BASE);
+        
+        function updateTime() {
+            document.getElementById('currentTime').textContent = new Date().toLocaleTimeString('ru-RU');
+        }
+        
+        async function checkAPI() {
+            document.getElementById('apiStatus').textContent = 'РџСЂРѕРІРµСЂСЏРµРј...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('apiStatus').innerHTML = 'вњ… Р Р°Р±РѕС‚Р°РµС‚ (v' + data.version + ')';
+                    showResults('вњ… API СЂР°Р±РѕС‚Р°РµС‚ РєРѕСЂСЂРµРєС‚РЅРѕ!\n' + JSON.stringify(data, null, 2));
+                } else {
+                    throw new Error('HTTP ' + response.status);
+                }
+            } catch (error) {
+                document.getElementById('apiStatus').innerHTML = 'вќЊ РћС€РёР±РєР°: ' + error.message;
+                showResults('вќЊ API РЅРµРґРѕСЃС‚СѓРїРµРЅ: ' + error.message);
+            }
+        }
+        
+        async function testAI() {
+            document.getElementById('aiStatus').textContent = 'РўРµСЃС‚РёСЂСѓРµРј...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/chat/ai`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        'message': 'РїСЂРёРІРµС‚', 
+                        'session_id': 'control_panel_test'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('aiStatus').innerHTML = 'вњ… AI СЂР°Р±РѕС‚Р°РµС‚';
+                    showResults('вњ… AI РѕС‚РІРµС‚РёР»:\n' + data.ai_response);
+                } else {
+                    throw new Error('HTTP ' + response.status);
+                }
+            } catch (error) {
+                document.getElementById('aiStatus').innerHTML = 'вќЊ AI РЅРµРґРѕСЃС‚СѓРїРµРЅ';
+                showResults('вќЊ AI РѕС€РёР±РєР°: ' + error.message);
+            }
+        }
+        
+        function showResults(text) {
+            document.getElementById('results').textContent = text;
+            document.getElementById('testResults').style.display = 'block';
+        }
+        
+        function showInfo() {
+            const info = `
+рџЋЇ RULETTT Control Panel
+
+рџ“Љ РЎРёСЃС‚РµРјР°: Windows 11
+рџђЌ Python: 3.13.7  
+рџ“Ќ IP: 192.168.88.216
+рџЊђ РџРѕСЂС‚С‹: API=5000, Web=8080
+
+рџљЂ РЎС‚Р°С‚СѓСЃ: Р’СЃРµ СЃРµСЂРІРёСЃС‹ Р°РєС‚РёРІРЅС‹
+
+рџ’Ў Р”Р»СЏ macOS РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№:
+- РћС‚РєСЂРѕР№С‚Рµ Р»СЋР±СѓСЋ СЃСЃС‹Р»РєСѓ РІС‹С€Рµ
+- Р’СЃРµ С„СѓРЅРєС†РёРё СЂР°Р±РѕС‚Р°СЋС‚ С‡РµСЂРµР· Р±СЂР°СѓР·РµСЂ
+- РќРµ С‚СЂРµР±СѓРµС‚СЃСЏ СѓСЃС‚Р°РЅРѕРІРєР° РџРћ
+`;
+            showResults(info);
+        }
+        
+        // РђРІС‚РѕРѕР±РЅРѕРІР»РµРЅРёРµ РІСЂРµРјРµРЅРё
+        setInterval(updateTime, 1000);
+        
+        // РџРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР°
+        updateTime();
+        checkAPI();
+        
+        // РџСЂРѕРІРµСЂСЏРµРј AI С‡РµСЂРµР· 2 СЃРµРєСѓРЅРґС‹
+        setTimeout(testAI, 2000);
+        
+        console.log('вњ… Control Panel РіРѕС‚РѕРІ Рє СЂР°Р±РѕС‚Рµ');
+    </script>
+</body>
+</html>

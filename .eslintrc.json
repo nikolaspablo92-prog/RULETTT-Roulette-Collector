@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "no-inline-styles": "off",
+    "react/no-unknown-property": "off"
+  }
+}

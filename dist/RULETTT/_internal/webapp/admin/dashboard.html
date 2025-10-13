@@ -1,0 +1,380 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>рџЋ® Dashboard | RULETTT BOT Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Р’РµСЂС…РЅСЏСЏ РїР°РЅРµР»СЊ РЅР°РІРёРіР°С†РёРё -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h1>рџ¤– RULETTT BOT</h1>
+            <span class="navbar-subtitle">РђРґРјРёРЅ-РїР°РЅРµР»СЊ</span>
+        </div>
+        
+        <div class="navbar-user">
+            <span id="userGreeting">рџ‘¤ Р—Р°РіСЂСѓР·РєР°...</span>
+            <button id="logoutBtn" class="btn btn-sm btn-danger">рџљЄ Р’С‹С…РѕРґ</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Р‘РѕРєРѕРІРѕРµ РјРµРЅСЋ -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="#dashboard" class="menu-item active" data-section="dashboard">
+                    <span class="menu-icon">рџ“Љ</span>
+                    Р”Р°С€Р±РѕСЂРґ
+                </a>
+                <a href="#keys" class="menu-item" data-section="keys">
+                    <span class="menu-icon">рџ”‘</span>
+                    РЈРїСЂР°РІР»РµРЅРёРµ РєР»СЋС‡Р°РјРё
+                </a>
+                <a href="#bot" class="menu-item" data-section="bot">
+                    <span class="menu-icon">рџ¤–</span>
+                    РЈРїСЂР°РІР»РµРЅРёРµ Р±РѕС‚РѕРј
+                </a>
+                <a href="#users" class="menu-item" data-section="users">
+                    <span class="menu-icon">рџ‘Ґ</span>
+                    РџРѕР»СЊР·РѕРІР°С‚РµР»Рё
+                </a>
+                <a href="#logs" class="menu-item" data-section="logs">
+                    <span class="menu-icon">рџ“‹</span>
+                    Р›РѕРіРё Р°РєС‚РёРІРЅРѕСЃС‚Рё
+                </a>
+                <a href="#settings" class="menu-item" data-section="settings">
+                    <span class="menu-icon">вљ™пёЏ</span>
+                    РќР°СЃС‚СЂРѕР№РєРё
+                </a>
+            </div>
+        </aside>
+
+        <!-- РћСЃРЅРѕРІРЅРѕР№ РєРѕРЅС‚РµРЅС‚ -->
+        <main class="main-content">
+            <!-- РЎРµРєС†РёСЏ: Р”Р°С€Р±РѕСЂРґ -->
+            <section id="dashboard-section" class="content-section active">
+                <h2>рџ“Љ РћР±Р·РѕСЂ СЃРёСЃС‚РµРјС‹</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">рџ”‘</div>
+                        <div class="stat-value" id="stat-active-keys">-</div>
+                        <div class="stat-label">РђРєС‚РёРІРЅС‹С… РєР»СЋС‡РµР№</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">рџ‘Ґ</div>
+                        <div class="stat-value" id="stat-online-users">-</div>
+                        <div class="stat-label">РћРЅР»Р°Р№РЅ СЃРµР№С‡Р°СЃ</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">рџ¤–</div>
+                        <div class="stat-value" id="stat-bot-status">вЏёпёЏ</div>
+                        <div class="stat-label">РЎС‚Р°С‚СѓСЃ Р±РѕС‚Р°</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">рџ“€</div>
+                        <div class="stat-value" id="stat-requests-today">-</div>
+                        <div class="stat-label">Р—Р°РїСЂРѕСЃРѕРІ СЃРµРіРѕРґРЅСЏ</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-charts">
+                    <div class="card">
+                        <h3>рџ“€ РђРєС‚РёРІРЅРѕСЃС‚СЊ Р·Р° РїРѕСЃР»РµРґРЅРёРµ 24 С‡Р°СЃР°</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- РЎРµРєС†РёСЏ: РЈРїСЂР°РІР»РµРЅРёРµ РєР»СЋС‡Р°РјРё -->
+            <section id="keys-section" class="content-section">
+                <h2>рџ”‘ РЈРїСЂР°РІР»РµРЅРёРµ РІСЂРµРјРµРЅРЅС‹РјРё РєР»СЋС‡Р°РјРё</h2>
+                
+                <div class="card">
+                    <h3>вћ• Р“РµРЅРµСЂР°С†РёСЏ РЅРѕРІРѕРіРѕ РєР»СЋС‡Р°</h3>
+                    <form id="generateKeyForm" class="key-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>рџ‘¤ РРјСЏ РєР»РёРµРЅС‚Р°</label>
+                                <input type="text" name="client_name" placeholder="РљР»РёРµРЅС‚ Рђ" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>вЏ±пёЏ Р’СЂРµРјСЏ Р¶РёР·РЅРё (РјРёРЅСѓС‚С‹)</label>
+                                <input type="number" name="ttl_minutes" value="120" min="30" max="480">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>рџ•ђ Р§Р°СЃС‹ СЂР°Р±РѕС‚С‹ РєР»СЋС‡Р°</label>
+                            <div class="hours-selector" id="hoursSelector">
+                                <!-- Р“РµРЅРµСЂРёСЂСѓРµС‚СЃСЏ С‡РµСЂРµР· JS -->
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>рџ”ў РњР°РєСЃРёРјСѓРј РёСЃРїРѕР»СЊР·РѕРІР°РЅРёР№</label>
+                                <input type="number" name="max_usage" value="1000" min="10" max="10000">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>рџ“ќ Р—Р°РјРµС‚РєРё (РѕРїС†РёРѕРЅР°Р»СЊРЅРѕ)</label>
+                                <input type="text" name="notes" placeholder="Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">рџ”ђ РЎРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ РєР»СЋС‡</button>
+                    </form>
+
+                    <!-- РћРєРЅРѕ СЃ СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅС‹Рј РєР»СЋС‡РѕРј -->
+                    <div id="generatedKeyDisplay" class="key-display">
+                        <div class="key-display-header">
+                            <span>вљ пёЏ Р’РђР–РќРћ: РљР»СЋС‡ РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЂР°Р·!</span>
+                        </div>
+                        <div class="key-display-body">
+                            <code id="generatedKeyValue"></code>
+                        </div>
+                        <button id="copyKeyBtn" class="btn btn-secondary">рџ“‹ РљРѕРїРёСЂРѕРІР°С‚СЊ РєР»СЋС‡</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>рџ“‹ РЎРїРёСЃРѕРє РєР»СЋС‡РµР№</h3>
+                    <div class="table-controls">
+                        <select id="keysFilter">
+                            <option value="all">Р’СЃРµ РєР»СЋС‡Рё</option>
+                            <option value="active">РђРєС‚РёРІРЅС‹Рµ</option>
+                            <option value="expired">РСЃС‚С‘РєС€РёРµ</option>
+                            <option value="revoked">РћС‚РѕР·РІР°РЅРЅС‹Рµ</option>
+                        </select>
+                        <button id="refreshKeysBtn" class="btn btn-sm">рџ”„ РћР±РЅРѕРІРёС‚СЊ</button>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table id="keysTable">
+                            <thead>
+                                <tr>
+                                    <th>РљР»РёРµРЅС‚</th>
+                                    <th>РЎРѕР·РґР°РЅ</th>
+                                    <th>РСЃС‚РµРєР°РµС‚</th>
+                                    <th>РСЃРїРѕР»СЊР·РѕРІР°РЅРѕ</th>
+                                    <th>РЎС‚Р°С‚СѓСЃ</th>
+                                    <th>Р”РµР№СЃС‚РІРёСЏ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keysTableBody">
+                                <tr>
+                                    <td colspan="6">Р—Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С…...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- РЎРµРєС†РёСЏ: РЈРїСЂР°РІР»РµРЅРёРµ Р±РѕС‚РѕРј -->
+            <section id="bot-section" class="content-section">
+                <h2>рџ¤– РЈРїСЂР°РІР»РµРЅРёРµ Р±РѕС‚РѕРј-СЃРёРјСѓР»СЏС‚РѕСЂРѕРј</h2>
+                
+                <div class="card bot-status-card">
+                    <div class="bot-status-indicator">
+                        <div id="botStatusIcon" class="status-icon">вЏёпёЏ</div>
+                        <div class="status-text">
+                            <h3 id="botStatusText">Р‘РѕС‚ РѕСЃС‚Р°РЅРѕРІР»РµРЅ</h3>
+                            <p id="botStatusDetails">РџРѕСЃР»РµРґРЅРёР№ Р·Р°РїСѓСЃРє: РЅРёРєРѕРіРґР°</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>в–¶пёЏ Р—Р°РїСѓСЃРє Р±РѕС‚Р°</h3>
+                    <form id="startBotForm">
+                        <div class="form-group">
+                            <label>рџЊђ Р¦РµР»РµРІРѕР№ URL</label>
+                            <input type="url" name="target_url" 
+                                   placeholder="https://target-website.com" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>рџ“‹ РЎС†РµРЅР°СЂРёР№</label>
+                                <select name="scenario">
+                                    <option value="collect_data">РЎР±РѕСЂ РґР°РЅРЅС‹С… СЂСѓР»РµС‚РєРё</option>
+                                    <option value="simulate_user">РЎРёРјСѓР»СЏС†РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ</option>
+                                    <option value="test_mode">РўРµСЃС‚РѕРІС‹Р№ СЂРµР¶РёРј</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>вЏ±пёЏ Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ (РјРёРЅСѓС‚С‹)</label>
+                                <input type="number" name="duration" value="30" min="5" max="480">
+                            </div>
+                        </div>
+
+                        <div class="bot-controls">
+                            <button type="submit" class="btn btn-success">в–¶пёЏ Р—Р°РїСѓСЃС‚РёС‚СЊ</button>
+                            <button type="button" id="stopBotBtn" class="btn btn-danger">вЏ№пёЏ РћСЃС‚Р°РЅРѕРІРёС‚СЊ</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>рџ“Љ РЎС‚Р°С‚РёСЃС‚РёРєР° Р±РѕС‚Р°</h3>
+                    <div id="botStatsDisplay">
+                        <p>РЎС‚Р°С‚РёСЃС‚РёРєР° Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅР° РїРѕСЃР»Рµ Р·Р°РїСѓСЃРєР° Р±РѕС‚Р°</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>рџ“‹ Р›РѕРіРё Р±РѕС‚Р° (РїРѕСЃР»РµРґРЅРёРµ 50 СЃС‚СЂРѕРє)</h3>
+                    <div class="logs-container">
+                        <pre id="botLogsDisplay">Р›РѕРіРё Р±СѓРґСѓС‚ РїРѕСЏРІР»СЏС‚СЊСЃСЏ Р·РґРµСЃСЊ...</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- РЎРµРєС†РёСЏ: РџРѕР»СЊР·РѕРІР°С‚РµР»Рё -->
+            <section id="users-section" class="content-section">
+                <h2>рџ‘Ґ РЈРїСЂР°РІР»РµРЅРёРµ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°РјРё</h2>
+                
+                <div class="card">
+                    <h3>вћ• Р”РѕР±Р°РІРёС‚СЊ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°</h3>
+                    <form id="createAdminForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>рџ‘¤ Р›РѕРіРёРЅ</label>
+                                <input type="text" name="username" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>рџ”’ РџР°СЂРѕР»СЊ</label>
+                                <input type="password" name="password" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>рџЋ­ Р РѕР»СЊ</label>
+                            <select name="role">
+                                <option value="super_admin">РЎСѓРїРµСЂ-Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ</option>
+                                <option value="team_member">Р§Р»РµРЅ РєРѕРјР°РЅРґС‹</option>
+                                <option value="observer">РќР°Р±Р»СЋРґР°С‚РµР»СЊ</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">вћ• РЎРѕР·РґР°С‚СЊ</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>рџ“‹ РЎРїРёСЃРѕРє Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРІ</h3>
+                    <div class="table-responsive">
+                        <table id="adminsTable">
+                            <thead>
+                                <tr>
+                                    <th>Р›РѕРіРёРЅ</th>
+                                    <th>Р РѕР»СЊ</th>
+                                    <th>РЎРѕР·РґР°РЅ</th>
+                                    <th>РџРѕСЃР»РµРґРЅРёР№ РІС…РѕРґ</th>
+                                    <th>РЎС‚Р°С‚СѓСЃ</th>
+                                    <th>Р”РµР№СЃС‚РІРёСЏ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminsTableBody">
+                                <tr>
+                                    <td colspan="6">Р—Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С…...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- РЎРµРєС†РёСЏ: Р›РѕРіРё -->
+            <section id="logs-section" class="content-section">
+                <h2>рџ“‹ Р›РѕРіРё Р°РєС‚РёРІРЅРѕСЃС‚Рё</h2>
+                
+                <div class="card">
+                    <div class="table-controls">
+                        <select id="logsFilter">
+                            <option value="all">Р’СЃРµ Р»РѕРіРё</option>
+                            <option value="admin">РўРѕР»СЊРєРѕ Р°РґРјРёРЅС‹</option>
+                            <option value="client">РўРѕР»СЊРєРѕ РєР»РёРµРЅС‚С‹</option>
+                        </select>
+                        <label>
+                            <input type="checkbox" id="showHiddenLogs">
+                            РџРѕРєР°Р·Р°С‚СЊ СЃРєСЂС‹С‚С‹Рµ Р·Р°РїРёСЃРё
+                        </label>
+                        <button id="refreshLogsBtn" class="btn btn-sm">рџ”„ РћР±РЅРѕРІРёС‚СЊ</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="logsTable">
+                            <thead>
+                                <tr>
+                                    <th>Р’СЂРµРјСЏ</th>
+                                    <th>РўРёРї</th>
+                                    <th>РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</th>
+                                    <th>Endpoint</th>
+                                    <th>РњРµС‚РѕРґ</th>
+                                    <th>РЎС‚Р°С‚СѓСЃ</th>
+                                    <th>IP</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsTableBody">
+                                <tr>
+                                    <td colspan="7">Р—Р°РіСЂСѓР·РєР° Р»РѕРіРѕРІ...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- РЎРµРєС†РёСЏ: РќР°СЃС‚СЂРѕР№РєРё -->
+            <section id="settings-section" class="content-section">
+                <h2>вљ™пёЏ РќР°СЃС‚СЂРѕР№РєРё СЃРёСЃС‚РµРјС‹</h2>
+                
+                <div class="card">
+                    <h3>рџ”§ РћР±С‰РёРµ РЅР°СЃС‚СЂРѕР№РєРё</h3>
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label>вЏ±пёЏ РРЅС‚РµСЂРІР°Р» СЂРѕС‚Р°С†РёРё РєР»СЋС‡РµР№ (С‡Р°СЃС‹)</label>
+                            <input type="number" name="key_rotation_hours" value="2" min="1" max="24">
+                        </div>
+
+                        <div class="form-group">
+                            <label>рџ”ў Р›РёРјРёС‚ Р·Р°РїСЂРѕСЃРѕРІ РІ РјРёРЅСѓС‚Сѓ</label>
+                            <input type="number" name="rate_limit" value="100" min="10" max="1000">
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="auto_cleanup">
+                                РђРІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ РѕС‡РёСЃС‚РєР° РёСЃС‚С‘РєС€РёС… РєР»СЋС‡РµР№
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">рџ’ѕ РЎРѕС…СЂР°РЅРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>рџ—‘пёЏ РћР±СЃР»СѓР¶РёРІР°РЅРёРµ</h3>
+                    <button id="cleanupExpiredBtn" class="btn btn-warning">рџ§№ РћС‡РёСЃС‚РёС‚СЊ РёСЃС‚С‘РєС€РёРµ РєР»СЋС‡Рё</button>
+                    <button id="exportDataBtn" class="btn btn-secondary">рџ“Ґ Р­РєСЃРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ РґР°РЅРЅС‹Рµ</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- РџРѕРґРєР»СЋС‡РµРЅРёРµ СЃРєСЂРёРїС‚РѕРІ -->
+    <script src="js/admin.js"></script>
+</body>
+</html>
+

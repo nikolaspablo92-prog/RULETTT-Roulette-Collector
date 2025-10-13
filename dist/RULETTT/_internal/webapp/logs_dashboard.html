@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 RULETTT - Мониторинг и Логи</title>
+    <link rel="stylesheet" href="extracted-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .filters {
+            background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-success { background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%); }
+        .btn-danger { background: linear-gradient(90deg, #f44336 0%, #da190b 100%); }
+
+        .logs-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .log-entry.debug { border-left-color: #36CFFF; }
+        .log-entry.info { border-left-color: #4CAF50; }
+        .log-entry.warning { border-left-color: #FFC107; }
+        .log-entry.error { border-left-color: #f44336; }
+        .log-entry.critical { border-left-color: #9C27B0; }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .log-level {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .log-level.debug { background: #36CFFF; color: black; }
+        .log-level.info { background: #4CAF50; }
+        .log-level.warning { background: #FFC107; color: black; }
+        .log-level.error { background: #f44336; }
+        .log-level.critical { background: #9C27B0; }
+
+        .log-message {
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .log-details {
+            opacity: 0.7;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .log-stack {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-size: 0.85em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .error-details {
+            background: rgba(255, 77, 77, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .error-list {
+            list-style: none;
+        }
+
+        .error-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .error-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .error-badge {
+            display: inline-block;
+            background: #f44336;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .tab.active {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            opacity: 0.6;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>📊 RULETTT - Мониторинг и Логи</h1>
+            <p>Детальное отслеживание ошибок и событий в реальном времени</p>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Всего ошибок</div>
+                <div class="stat-value" id="totalErrors">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Нерешённые</div>
+                <div class="stat-value" id="unresolvedErrors">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">За 24 часа</div>
+                <div class="stat-value" id="last24hErrors">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Активные сессии</div>
+                <div class="stat-value" id="activeSessions">-</div>
+            </div>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('logs')">📜 Логи</div>
+            <div class="tab" onclick="switchTab('errors')">🚨 Ошибки</div>
+            <div class="tab" onclick="switchTab('events')">📊 События</div>
+            <div class="tab" onclick="switchTab('stats')">📈 Статистика</div>
+        </div>
+
+        <!-- Контент вкладки: Логи -->
+        <div id="logsTab" class="tab-content active">
+            <div class="filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="levelFilter">Уровень:</label>
+                        <select id="levelFilter" title="Выбор уровня логирования">
+                            <option value="">Все</option>
+                            <option value="DEBUG">DEBUG</option>
+                            <option value="INFO">INFO</option>
+                            <option value="WARNING">WARNING</option>
+                            <option value="ERROR">ERROR</option>
+                            <option value="CRITICAL">CRITICAL</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Модуль:</label>
+                        <input type="text" id="moduleFilter" placeholder="Имя модуля...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Поиск:</label>
+                        <input type="text" id="searchFilter" placeholder="Поиск в логах...">
+                    </div>
+                    <button class="btn btn-success" onclick="applyFilters()">🔍 Фильтровать</button>
+                    <button class="btn" onclick="refreshLogs()">🔄 Обновить</button>
+                    <button class="btn btn-danger" onclick="clearLogs()">🗑️ Очистить</button>
+                </div>
+            </div>
+
+            <div class="logs-container" id="logsContainer">
+                <div class="loading">⏳ Загрузка логов...</div>
+            </div>
+        </div>
+
+        <!-- Контент вкладки: Ошибки -->
+        <div id="errorsTab" class="tab-content">
+            <div class="error-details">
+                <h3>🚨 Нерешённые ошибки</h3>
+                <ul class="error-list" id="errorList">
+                    <li class="loading">⏳ Загрузка...</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Контент вкладки: События -->
+        <div id="eventsTab" class="tab-content">
+            <div class="logs-container" id="eventsContainer">
+                <div class="loading">⏳ Загрузка событий...</div>
+            </div>
+        </div>
+
+        <!-- Контент вкладки: Статистика -->
+        <div id="statsTab" class="tab-content">
+            <div class="stat-card">
+                <h3>📈 Подробная статистика</h3>
+                <pre id="detailedStats" class="log-stack">⏳ Загрузка...</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let allLogs = [];
+        let updateInterval;
+        
+        // Переключение вкладок
+        function switchTab(tabName) {
+            // Обновляем активную вкладку
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Загружаем данные для вкладки
+            if (tabName === 'errors') loadErrors();
+            if (tabName === 'events') loadEvents();
+            if (tabName === 'stats') loadDetailedStats();
+        }
+        
+        // Загрузка статистики
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/logs/stats');
+                const stats = await response.json();
+                
+                document.getElementById('totalErrors').textContent = stats.total_errors || 0;
+                document.getElementById('unresolvedErrors').textContent = stats.unresolved_errors || 0;
+                document.getElementById('last24hErrors').textContent = stats.last_24h || 0;
+                document.getElementById('activeSessions').textContent = stats.active_sessions || 0;
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+        
+        // Загрузка логов
+        async function loadLogs() {
+            try {
+                const response = await fetch('/api/logs?limit=100');
+                allLogs = await response.json();
+                displayLogs(allLogs);
+            } catch (error) {
+                console.error('Failed to load logs:', error);
+                document.getElementById('logsContainer').innerHTML = 
+                    '<div class="empty-state"><div class="empty-state-icon">❌</div><p>Ошибка загрузки логов</p></div>';
+            }
+        }
+        
+        // Отображение логов
+        function displayLogs(logs) {
+            const container = document.getElementById('logsContainer');
+            
+            if (logs.length === 0) {
+                container.innerHTML = 
+                    '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Нет логов для отображения</p></div>';
+                return;
+            }
+            
+            container.innerHTML = logs.map(log => `
+                <div class="log-entry ${log.level.toLowerCase()}">
+                    <div class="log-header">
+                        <span class="log-level ${log.level.toLowerCase()}">${log.level}</span>
+                        <span class="log-details">${log.timestamp}</span>
+                    </div>
+                    <div class="log-message">${log.message}</div>
+                    <div class="log-details">
+                        📦 ${log.module || 'unknown'}:${log.function || 'unknown'}:${log.line || '?'} |
+                        👤 ${log.user_id || 'anonymous'} |
+                        🔖 ${log.session_id || 'no-session'}
+                    </div>
+                    ${log.exception ? `
+                        <div class="log-stack">
+                            <strong>Exception:</strong> ${log.exception.type}
+                            <br><strong>Message:</strong> ${log.exception.message}
+                            <br><strong>Traceback:</strong>
+                            <br>${log.exception.traceback.join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+        
+        // Применение фильтров
+        function applyFilters() {
+            const levelFilter = document.getElementById('levelFilter').value;
+            const moduleFilter = document.getElementById('moduleFilter').value.toLowerCase();
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+            
+            const filtered = allLogs.filter(log => {
+                if (levelFilter && log.level !== levelFilter) return false;
+                if (moduleFilter && !log.module?.toLowerCase().includes(moduleFilter)) return false;
+                if (searchFilter && !log.message.toLowerCase().includes(searchFilter)) return false;
+                return true;
+            });
+            
+            displayLogs(filtered);
+        }
+        
+        // Загрузка ошибок
+        async function loadErrors() {
+            try {
+                const response = await fetch('/api/errors/unresolved');
+                const errors = await response.json();
+                
+                const errorList = document.getElementById('errorList');
+                
+                if (errors.length === 0) {
+                    errorList.innerHTML = '<li class="empty-state"><div class="empty-state-icon">✅</div><p>Нет нерешённых ошибок!</p></li>';
+                    return;
+                }
+                
+                errorList.innerHTML = errors.map(error => `
+                    <li class="error-item" onclick="showErrorDetails(${error.id})">
+                        <strong>${error.error_type}</strong>
+                        <span class="error-badge">${error.occurrences}x</span>
+                        <div class="log-details">${error.error_message}</div>
+                        <div class="log-details">
+                            📦 ${error.module || 'unknown'} | 
+                            📅 ${error.last_seen} |
+                            👤 ${error.user_id || 'anonymous'}
+                        </div>
+                    </li>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load errors:', error);
+            }
+        }
+        
+        // Показать детали ошибки
+        function showErrorDetails(errorId) {
+            alert(`Открываем детали ошибки #${errorId}`);
+            // Здесь можно открыть модальное окно с полной информацией
+        }
+        
+        // Загрузка событий
+        async function loadEvents() {
+            try {
+                const response = await fetch('/api/events?limit=100');
+                const events = await response.json();
+                
+                const container = document.getElementById('eventsContainer');
+                container.innerHTML = events.map(event => `
+                    <div class="log-entry info">
+                        <div class="log-header">
+                            <strong>${event.type}</strong>
+                            <span>${event.timestamp}</span>
+                        </div>
+                        <pre class="log-details">${JSON.stringify(event.details, null, 2)}</pre>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load events:', error);
+            }
+        }
+        
+        // Загрузка детальной статистики
+        async function loadDetailedStats() {
+            try {
+                const response = await fetch('/api/logs/stats/detailed');
+                const stats = await response.json();
+                
+                document.getElementById('detailedStats').textContent = 
+                    JSON.stringify(stats, null, 2);
+            } catch (error) {
+                console.error('Failed to load detailed stats:', error);
+            }
+        }
+        
+        // Обновление логов
+        function refreshLogs() {
+            loadLogs();
+            loadStats();
+        }
+        
+        // Очистка логов (подтверждение)
+        function clearLogs() {
+            if (confirm('Вы уверены, что хотите очистить все логи?')) {
+                fetch('/api/logs/clear', { method: 'POST' })
+                    .then(() => refreshLogs())
+                    .catch(error => console.error('Failed to clear logs:', error));
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            loadLogs();
+            
+            // Автоматическое обновление каждые 10 секунд
+            updateInterval = setInterval(() => {
+                loadStats();
+                loadLogs();
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
