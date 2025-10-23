@@ -1,0 +1,1084 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+  <head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>рџ¤ќ RULETTT - РљРѕРјР°РЅРґРЅР°СЏ Р Р°Р±РѕС‚Р°</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        min-height: 100vh;
+      }
+
+      .communication-container {
+        display: grid;
+        grid-template-columns: 300px 1fr 350px;
+        height: 100vh;
+        gap: 0;
+      }
+
+      .sidebar {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .main-chat {
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .activity-panel {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .chat-header {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        max-height: calc(100vh - 180px);
+      }
+
+      .chat-input-area {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .message {
+        margin-bottom: 15px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        max-width: 80%;
+        word-wrap: break-word;
+      }
+
+      .message.own {
+        background: linear-gradient(45deg, #4caf50, #45a049);
+        margin-left: auto;
+        text-align: right;
+      }
+
+      .message.other {
+        background: rgba(255, 255, 255, 0.1);
+        margin-right: auto;
+      }
+
+      .message.system {
+        background: rgba(33, 150, 243, 0.2);
+        border-left: 4px solid #2196f3;
+        margin: 0 auto;
+        text-align: center;
+        font-style: italic;
+        max-width: 60%;
+      }
+
+      .message-header {
+        font-size: 0.85em;
+        opacity: 0.8;
+        margin-bottom: 5px;
+      }
+
+      .message-time {
+        font-size: 0.7em;
+        opacity: 0.6;
+        margin-top: 5px;
+      }
+
+      .chat-input {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+      }
+
+      .input-field {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        resize: none;
+        max-height: 120px;
+        min-height: 44px;
+      }
+
+      .input-field::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .send-btn {
+        padding: 12px 20px;
+        background: linear-gradient(45deg, #4caf50, #45a049);
+        border: none;
+        border-radius: 25px;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+      }
+
+      .send-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .voice-btn,
+      .video-btn,
+      .screen-btn {
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        margin-left: 8px;
+      }
+
+      .voice-btn:hover {
+        background: rgba(76, 175, 80, 0.3);
+        border-color: #4caf50;
+      }
+
+      .video-btn:hover {
+        background: rgba(33, 150, 243, 0.3);
+        border-color: #2196f3;
+      }
+
+      .screen-btn:hover {
+        background: rgba(255, 152, 0, 0.3);
+        border-color: #ff9800;
+      }
+
+      .voice-btn.active {
+        background: #4caf50;
+        animation: pulse 1.5s infinite;
+      }
+
+      .video-btn.active {
+        background: #2196f3;
+      }
+
+      .screen-btn.active {
+        background: #ff9800;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .team-list {
+        margin-bottom: 30px;
+      }
+
+      .team-member {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .team-member:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .member-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #4caf50, #2196f3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        position: relative;
+      }
+
+      .member-avatar.online::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
+        background: #4caf50;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+
+      .member-info {
+        flex: 1;
+      }
+
+      .member-name {
+        font-weight: bold;
+        margin-bottom: 2px;
+      }
+
+      .member-status {
+        font-size: 0.8em;
+        opacity: 0.7;
+      }
+
+      .quick-actions {
+        margin-top: 20px;
+      }
+
+      .quick-actions h3 {
+        margin-bottom: 15px;
+        color: #4caf50;
+      }
+
+      .action-btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .action-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #4caf50;
+      }
+
+      .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+        margin-bottom: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        border-left: 3px solid #2196f3;
+      }
+
+      .activity-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(33, 150, 243, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #2196f3;
+        flex-shrink: 0;
+      }
+
+      .activity-content {
+        flex: 1;
+      }
+
+      .activity-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+        font-size: 0.9em;
+      }
+
+      .activity-description {
+        font-size: 0.8em;
+        opacity: 0.8;
+        margin-bottom: 4px;
+      }
+
+      .activity-time {
+        font-size: 0.7em;
+        opacity: 0.6;
+      }
+
+      .typing-indicator {
+        display: none;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        margin-bottom: 10px;
+        max-width: 80px;
+      }
+
+      .typing-dots {
+        display: flex;
+        gap: 4px;
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+      }
+
+      .dot:nth-child(1) {
+        animation-delay: -0.32s;
+      }
+      .dot:nth-child(2) {
+        animation-delay: -0.16s;
+      }
+
+      @keyframes typing {
+        0%,
+        80%,
+        100% {
+          transform: scale(0.8);
+          opacity: 0.5;
+        }
+        40% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .file-upload {
+        position: relative;
+        display: inline-block;
+        margin-right: 8px;
+      }
+
+      .file-upload input[type="file"] {
+        display: none;
+      }
+
+      .file-upload-btn {
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.3s ease;
+      }
+
+      .file-upload-btn:hover {
+        background: rgba(156, 39, 176, 0.3);
+        border-color: #9c27b0;
+      }
+
+      .notification-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(76, 175, 80, 0.9);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+      }
+
+      .notification-toast.show {
+        transform: translateX(0);
+      }
+
+      .emoji-picker {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        background: rgba(0, 0, 0, 0.9);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .emoji-grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 8px;
+        max-width: 320px;
+      }
+
+      .emoji {
+        padding: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 20px;
+        transition: background 0.2s ease;
+      }
+
+      .emoji:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="communication-container">
+      <!-- Р‘РѕРєРѕРІР°СЏ РїР°РЅРµР»СЊ -->
+      <div class="sidebar">
+        <h2 class="mb-20">рџ‘Ґ РљРѕРјР°РЅРґР°</h2>
+
+        <div class="team-list">
+          <div class="team-member" onclick="openDirectChat('me')">
+            <div class="member-avatar online">РЇ</div>
+            <div class="member-info">
+              <div class="member-name">Р’С‹ (РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ)</div>
+              <div class="member-status">РћРЅР»Р°Р№РЅ вЂў РђРєС‚РёРІРµРЅ</div>
+            </div>
+          </div>
+
+          <div class="team-member" onclick="openDirectChat('collector')">
+            <div class="member-avatar online">Рљ</div>
+            <div class="member-info">
+              <div class="member-name">РљРѕР»Р»РµРєС‚РѕСЂ</div>
+              <div class="member-status">РћРЅР»Р°Р№РЅ вЂў РЎРѕР±РёСЂР°РµС‚ РґР°РЅРЅС‹Рµ</div>
+            </div>
+          </div>
+
+          <div class="team-member" onclick="openDirectChat('analyst')">
+            <div class="member-avatar">Рђ</div>
+            <div class="member-info">
+              <div class="member-name">РђРЅР°Р»РёС‚РёРє</div>
+              <div class="member-status">РћС„Р»Р°Р№РЅ вЂў 10 РјРёРЅ РЅР°Р·Р°Рґ</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <h3>вљЎ Р‘С‹СЃС‚СЂС‹Рµ Р”РµР№СЃС‚РІРёСЏ</h3>
+          <a href="#" class="action-btn" onclick="inviteNewMember()"
+            >рџ‘¤ РџСЂРёРіР»Р°СЃРёС‚СЊ СѓС‡Р°СЃС‚РЅРёРєР°</a
+          >
+          <a href="#" class="action-btn" onclick="createMeeting()"
+            >рџ“№ РЎРѕР·РґР°С‚СЊ РІСЃС‚СЂРµС‡Сѓ</a
+          >
+          <a href="#" class="action-btn" onclick="shareScreen()"
+            >рџ“є Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР°</a
+          >
+          <a href="#" class="action-btn" onclick="shareFiles()"
+            >рџ“Ѓ РџРѕРґРµР»РёС‚СЊСЃСЏ С„Р°Р№Р»Р°РјРё</a
+          >
+          <a href="#" class="action-btn" onclick="createTask()"
+            >вњ… РЎРѕР·РґР°С‚СЊ Р·Р°РґР°С‡Сѓ</a
+          >
+        </div>
+      </div>
+
+      <!-- РћСЃРЅРѕРІРЅРѕР№ С‡Р°С‚ -->
+      <div class="main-chat">
+        <div class="chat-header">
+          <div>
+            <h2>рџ’¬ РћР±С‰РёР№ Р§Р°С‚ RULETTT</h2>
+            <div class="flex gap-10 align-center mt-5">
+              <label class="form-label-inline">Р’Р°С€Рµ РёРјСЏ:</label>
+              <input 
+                type="text" 
+                id="usernameInput" 
+                placeholder="Р’РІРµРґРёС‚Рµ РёРјСЏ..." 
+                class="form-input-small"
+                onchange="updateUsername()"
+              >
+            </div>
+            <p id="chatStatus" class="chat-status">РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє С‡Р°С‚Сѓ...</p>
+          </div>
+          <div class="flex gap-15">
+            <button
+              class="voice-btn"
+              id="voiceBtn"
+              onclick="toggleVoice()"
+              title="Р“РѕР»РѕСЃРѕРІРѕР№ С‡Р°С‚"
+            >
+              рџЋ¤
+            </button>
+            <button
+              class="video-btn"
+              id="videoBtn"
+              onclick="toggleVideo()"
+              title="Р’РёРґРµРѕР·РІРѕРЅРѕРє"
+            >
+              рџ“№
+            </button>
+            <button
+              class="screen-btn"
+              id="screenBtn"
+              onclick="toggleScreen()"
+              title="Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР°"
+            >
+              рџ“є
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="message system">
+            <div>рџЋІ Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ РІ РєРѕРјР°РЅРґРЅС‹Р№ С‡Р°С‚ RULETTT!</div>
+            <div class="message-time">РЎРµРіРѕРґРЅСЏ, 14:30</div>
+          </div>
+
+          <div class="message other">
+            <div class="message-header">РљРѕР»Р»РµРєС‚РѕСЂ</div>
+            <div>
+              РџСЂРёРІРµС‚! РЇ Р·Р°РїСѓСЃС‚РёР» СЃР±РѕСЂ РґР°РЅРЅС‹С… СЃ Stake.com. РЈР¶Рµ СЃРѕР±СЂР°Р» 150
+              СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ СЃРїРёРЅРѕРІ рџЋІ
+            </div>
+            <div class="message-time">14:32</div>
+          </div>
+
+          <div class="message own">
+            <div class="message-header">Р’С‹</div>
+            <div>
+              РћС‚Р»РёС‡РЅРѕ! РЇ РЅР°С‡РЅСѓ Р°РЅР°Р»РёР· СЃС‚СЂР°С‚РµРіРёР№. РњРѕР¶РµС€СЊ С‚Р°РєР¶Рµ РїРѕРґРєР»СЋС‡РёС‚СЊ
+              BC.Game?
+            </div>
+            <div class="message-time">14:33</div>
+          </div>
+
+          <div class="message other">
+            <div class="message-header">РљРѕР»Р»РµРєС‚РѕСЂ</div>
+            <div>
+              РљРѕРЅРµС‡РЅРѕ! РЎРµР№С‡Р°СЃ РїРѕРґРєР»СЋС‡Сѓ BC.Game. РџР°СЂР°Р»Р»РµР»СЊРЅС‹Р№ СЃР±РѕСЂ РґР°СЃС‚ Р»СѓС‡С€РёРµ
+              СЂРµР·СѓР»СЊС‚Р°С‚С‹ рџ“Љ
+            </div>
+            <div class="message-time">14:35</div>
+          </div>
+
+          <div class="message system">
+            <div>рџ“Љ РђРЅР°Р»РёС‚РёРє РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ Рє С‡Р°С‚Сѓ</div>
+            <div class="message-time">14:40</div>
+          </div>
+
+          <div
+            class="message other"
+            class="bg-purple-light"
+          >
+            <div class="message-header">РђРЅР°Р»РёС‚РёРє</div>
+            <div>
+              РџСЂРёРІРµС‚, РєРѕРјР°РЅРґР°! РџСЂРѕР°РЅР°Р»РёР·РёСЂРѕРІР°Р» РІС‡РµСЂР°С€РЅРёРµ РґР°РЅРЅС‹Рµ. РњР°СЂС‚РёРЅРіРµР№Р» РЅР°
+              РєСЂР°СЃРЅРѕРµ РїРѕРєР°Р·Р°Р» +18.5% РїСЂРёР±С‹Р»Рё рџ’°
+            </div>
+            <div class="message-time">14:41</div>
+          </div>
+
+          <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <div class="chat-input">
+            <div class="file-upload">
+              <input
+                type="file"
+                id="fileInput"
+                multiple
+                accept="image/*,.pdf,.json,.csv"
+              />
+              <label
+                for="fileInput"
+                class="file-upload-btn"
+                title="РџСЂРёРєСЂРµРїРёС‚СЊ С„Р°Р№Р»"
+                >рџ“Ћ</label
+              >
+            </div>
+
+            <textarea
+              class="input-field"
+              id="messageInput"
+              placeholder="Р’РІРµРґРёС‚Рµ СЃРѕРѕР±С‰РµРЅРёРµ... (Enter РґР»СЏ РѕС‚РїСЂР°РІРєРё, Shift+Enter РґР»СЏ РЅРѕРІРѕР№ СЃС‚СЂРѕРєРё)"
+              rows="1"
+            ></textarea>
+
+            <div class="pos-rel">
+              <button
+                class="voice-btn"
+                onclick="toggleEmojiPicker()"
+                title="Р­РјРѕРґР·Рё"
+              >
+                рџЉ
+              </button>
+              <div class="emoji-picker" id="emojiPicker">
+                <div class="emoji-grid">
+                  <span class="emoji" onclick="insertEmoji('рџЉ')">рџЉ</span>
+                  <span class="emoji" onclick="insertEmoji('рџ‘Ќ')">рџ‘Ќ</span>
+                  <span class="emoji" onclick="insertEmoji('рџЋІ')">рџЋІ</span>
+                  <span class="emoji" onclick="insertEmoji('рџ’°')">рџ’°</span>
+                  <span class="emoji" onclick="insertEmoji('рџ“Љ')">рџ“Љ</span>
+                  <span class="emoji" onclick="insertEmoji('рџ”Ґ')">рџ”Ґ</span>
+                  <span class="emoji" onclick="insertEmoji('вљЎ')">вљЎ</span>
+                  <span class="emoji" onclick="insertEmoji('вњ…')">вњ…</span>
+                  <span class="emoji" onclick="insertEmoji('вќЊ')">вќЊ</span>
+                  <span class="emoji" onclick="insertEmoji('рџљЂ')">рџљЂ</span>
+                  <span class="emoji" onclick="insertEmoji('рџ’Ў')">рџ’Ў</span>
+                  <span class="emoji" onclick="insertEmoji('рџЋЇ')">рџЋЇ</span>
+                  <span class="emoji" onclick="insertEmoji('рџ”¬')">рџ”¬</span>
+                  <span class="emoji" onclick="insertEmoji('рџ“€')">рџ“€</span>
+                  <span class="emoji" onclick="insertEmoji('рџ“‰')">рџ“‰</span>
+                  <span class="emoji" onclick="insertEmoji('в­ђ')">в­ђ</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+              РћС‚РїСЂР°РІРёС‚СЊ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- РџР°РЅРµР»СЊ Р°РєС‚РёРІРЅРѕСЃС‚Рё -->
+      <div class="activity-panel">
+        <h3 class="mb-20">рџ“‹ РђРєС‚РёРІРЅРѕСЃС‚СЊ</h3>
+
+        <div class="activity-item">
+          <div class="activity-icon">рџЋІ</div>
+          <div class="activity-content">
+            <div class="activity-title">РќРѕРІС‹Рµ РґР°РЅРЅС‹Рµ</div>
+            <div class="activity-description">
+              РљРѕР»Р»РµРєС‚РѕСЂ: +25 СЃРїРёРЅРѕРІ СЃ Stake.com
+            </div>
+            <div class="activity-time">2 РјРёРЅСѓС‚С‹ РЅР°Р·Р°Рґ</div>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon">рџ“Љ</div>
+          <div class="activity-content">
+            <div class="activity-title">РђРЅР°Р»РёР· Р·Р°РІРµСЂС€РµРЅ</div>
+            <div class="activity-description">
+              РђРЅР°Р»РёС‚РёРє: РЎС‚СЂР°С‚РµРіРёСЏ РњР°СЂС‚РёРЅРіРµР№Р»
+            </div>
+            <div class="activity-time">5 РјРёРЅСѓС‚ РЅР°Р·Р°Рґ</div>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon">рџ’¬</div>
+          <div class="activity-content">
+            <div class="activity-title">РќРѕРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ</div>
+            <div class="activity-description">РљРѕР»Р»РµРєС‚РѕСЂ РІ РѕР±С‰РµРј С‡Р°С‚Рµ</div>
+            <div class="activity-time">7 РјРёРЅСѓС‚ РЅР°Р·Р°Рґ</div>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon">рџ‘¤</div>
+          <div class="activity-content">
+            <div class="activity-title">Р’С…РѕРґ РІ СЃРёСЃС‚РµРјСѓ</div>
+            <div class="activity-description">РђРЅР°Р»РёС‚РёРє РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ</div>
+            <div class="activity-time">15 РјРёРЅСѓС‚ РЅР°Р·Р°Рґ</div>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon">рџ”„</div>
+          <div class="activity-content">
+            <div class="activity-title">РЎРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ</div>
+            <div class="activity-description">РђРІС‚РѕСЃРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С…</div>
+            <div class="activity-time">30 РјРёРЅСѓС‚ РЅР°Р·Р°Рґ</div>
+          </div>
+        </div>
+
+        <div class="mt-30">
+          <h4 class="color-green mb-15">рџЋЇ РўРµРєСѓС‰РёРµ Р—Р°РґР°С‡Рё</h4>
+
+          <div class="task-card">
+            <div class="task-title">
+              вњ… РЎР±РѕСЂ РґР°РЅРЅС‹С… Stake.com
+            </div>
+            <div class="task-desc">
+              РљРѕР»Р»РµРєС‚РѕСЂ вЂў Р’ РїСЂРѕС†РµСЃСЃРµ
+            </div>
+            <div class="task-progress-track">
+              <div class="task-progress-fill width-75"></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-title">
+              рџ“Љ РђРЅР°Р»РёР· СЃС‚СЂР°С‚РµРіРёР№
+            </div>
+            <div class="task-desc">
+              РђРЅР°Р»РёС‚РёРє вЂў Р—Р°РІРµСЂС€РµРЅРѕ
+            </div>
+            <div class="task-progress-track">
+              <div class="task-progress-fill width-100"></div>
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-title">
+              рџЋЇ РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ СЃС‚СЂР°С‚РµРіРёР№
+            </div>
+            <div class="task-desc">
+              РљРѕРјР°РЅРґР° вЂў Р—Р°РїР»Р°РЅРёСЂРѕРІР°РЅРѕ
+            </div>
+            <div class="task-progress-track-orange">
+              <div class="task-progress-fill-orange width-15"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- РЈРІРµРґРѕРјР»РµРЅРёСЏ -->
+    <div id="notificationToast" class="notification-toast"></div>
+
+    <script>
+      let isVoiceActive = false;
+      let isVideoActive = false;
+      let isScreenActive = false;
+
+      // РђРІС‚РѕР·Р°РїРѕР»РЅРµРЅРёРµ textarea
+      const messageInput = document.getElementById("messageInput");
+      messageInput.addEventListener("input", function () {
+        this.style.height = "auto";
+        this.style.height = Math.min(this.scrollHeight, 120) + "px";
+
+        // РџРѕРєР°Р·С‹РІР°РµРј РёРЅРґРёРєР°С‚РѕСЂ РїРµС‡Р°С‚Рё
+        showTypingIndicator();
+      });
+
+      // РћС‚РїСЂР°РІРєР° РїРѕ Enter
+      messageInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      async function sendMessage() {
+        const input = document.getElementById("messageInput");
+        const message = input.value.trim();
+
+        if (message) {
+          // Р”РѕР±Р°РІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ Р»РѕРєР°Р»СЊРЅРѕ СЃСЂР°Р·Сѓ
+          const username =
+            document.getElementById("usernameInput")?.value || "РђРЅРѕРЅРёРј";
+          addMessage(message, "own", username);
+          input.value = "";
+          input.style.height = "auto";
+
+          try {
+            // РћС‚РїСЂР°РІР»СЏРµРј РІ РѕР±С‰РёР№ С‡Р°С‚ С‡РµСЂРµР· API
+            const response = await fetch("/api/chat", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                username: username,
+                message: message,
+                session_id: "rulettt_main_chat",
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error("РћС€РёР±РєР° РѕС‚РїСЂР°РІРєРё СЃРѕРѕР±С‰РµРЅРёСЏ");
+            }
+
+            const result = await response.json();
+            console.log("вњ… РЎРѕРѕР±С‰РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ:", result.message_id);
+          } catch (error) {
+            console.error("вќЊ РћС€РёР±РєР° РѕС‚РїСЂР°РІРєРё СЃРѕРѕР±С‰РµРЅРёСЏ:", error);
+            addMessage(
+              "вљ пёЏ РћС€РёР±РєР° РѕС‚РїСЂР°РІРєРё СЃРѕРѕР±С‰РµРЅРёСЏ. РџРѕРїСЂРѕР±СѓР№С‚Рµ РїРѕР·Р¶Рµ.",
+              "system",
+              "РЎРёСЃС‚РµРјР°"
+            );
+          }
+        }
+      }
+
+      function addMessage(text, type, author) {
+        const messagesContainer = document.getElementById("chatMessages");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${type}`;
+
+        const now = new Date();
+        const time = now.toLocaleTimeString("ru-RU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        if (type !== "system") {
+          messageDiv.innerHTML = `
+                    <div class="message-header">${author}</div>
+                    <div>${text}</div>
+                    <div class="message-time">${time}</div>
+                `;
+        } else {
+          messageDiv.innerHTML = `
+                    <div>${text}</div>
+                    <div class="message-time">${time}</div>
+                `;
+        }
+
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Р”РѕР±Р°РІР»СЏРµРј РІ Р°РєС‚РёРІРЅРѕСЃС‚СЊ
+        addActivity(`РќРѕРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ РѕС‚ ${author}`, "С‚РѕР»СЊРєРѕ С‡С‚Рѕ");
+      }
+
+      function showTypingIndicator() {
+        const indicator = document.getElementById("typingIndicator");
+        indicator.style.display = "block";
+
+        clearTimeout(window.typingTimeout);
+        window.typingTimeout = setTimeout(() => {
+          indicator.style.display = "none";
+        }, 3000);
+      }
+
+      function toggleVoice() {
+        const btn = document.getElementById("voiceBtn");
+        isVoiceActive = !isVoiceActive;
+
+        if (isVoiceActive) {
+          btn.classList.add("active");
+          btn.innerHTML = "рџЋ¤";
+          showNotification("рџЋ¤ Р“РѕР»РѕСЃРѕРІРѕР№ С‡Р°С‚ РІРєР»СЋС‡РµРЅ");
+          addMessage("Р“РѕР»РѕСЃРѕРІРѕР№ С‡Р°С‚ Р°РєС‚РёРІРёСЂРѕРІР°РЅ", "system");
+        } else {
+          btn.classList.remove("active");
+          btn.innerHTML = "рџ”‡";
+          showNotification("рџ”‡ Р“РѕР»РѕСЃРѕРІРѕР№ С‡Р°С‚ РѕС‚РєР»СЋС‡РµРЅ");
+          addMessage("Р“РѕР»РѕСЃРѕРІРѕР№ С‡Р°С‚ РґРµР°РєС‚РёРІРёСЂРѕРІР°РЅ", "system");
+        }
+      }
+
+      function toggleVideo() {
+        const btn = document.getElementById("videoBtn");
+        isVideoActive = !isVideoActive;
+
+        if (isVideoActive) {
+          btn.classList.add("active");
+          showNotification("рџ“№ Р’РёРґРµРѕР·РІРѕРЅРѕРє РЅР°С‡Р°С‚");
+          addMessage("Р’РёРґРµРѕРєРѕРЅС„РµСЂРµРЅС†РёСЏ РЅР°С‡Р°С‚Р°", "system");
+        } else {
+          btn.classList.remove("active");
+          showNotification("рџ“№ Р’РёРґРµРѕР·РІРѕРЅРѕРє Р·Р°РІРµСЂС€РµРЅ");
+          addMessage("Р’РёРґРµРѕРєРѕРЅС„РµСЂРµРЅС†РёСЏ Р·Р°РІРµСЂС€РµРЅР°", "system");
+        }
+      }
+
+      function toggleScreen() {
+        const btn = document.getElementById("screenBtn");
+        isScreenActive = !isScreenActive;
+
+        if (isScreenActive) {
+          btn.classList.add("active");
+          showNotification("рџ“є Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР° РЅР°С‡Р°С‚Р°");
+          addMessage("Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР° Р°РєС‚РёРІРёСЂРѕРІР°РЅР°", "system");
+        } else {
+          btn.classList.remove("active");
+          showNotification("рџ“є Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР° Р·Р°РІРµСЂС€РµРЅР°");
+          addMessage("Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР° РґРµР°РєС‚РёРІРёСЂРѕРІР°РЅР°", "system");
+        }
+      }
+
+      function toggleEmojiPicker() {
+        const picker = document.getElementById("emojiPicker");
+        picker.style.display =
+          picker.style.display === "block" ? "none" : "block";
+      }
+
+      function insertEmoji(emoji) {
+        const input = document.getElementById("messageInput");
+        const cursorPos = input.selectionStart;
+        const textBefore = input.value.substring(0, cursorPos);
+        const textAfter = input.value.substring(cursorPos);
+        input.value = textBefore + emoji + textAfter;
+        input.selectionStart = input.selectionEnd = cursorPos + emoji.length;
+        input.focus();
+
+        document.getElementById("emojiPicker").style.display = "none";
+      }
+
+      function showNotification(message) {
+        const toast = document.getElementById("notificationToast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 3000);
+      }
+
+      function addActivity(title, time) {
+        // Р”РѕР±Р°РІР»СЏРµРј Р°РєС‚РёРІРЅРѕСЃС‚СЊ РІ РїР°РЅРµР»СЊ (СѓРїСЂРѕС‰РµРЅРЅР°СЏ РІРµСЂСЃРёСЏ)
+        console.log(`РќРѕРІР°СЏ Р°РєС‚РёРІРЅРѕСЃС‚СЊ: ${title} - ${time}`);
+      }
+
+      function inviteNewMember() {
+        const email = prompt(
+          "Р’РІРµРґРёС‚Рµ email РёР»Рё GitHub username РЅРѕРІРѕРіРѕ СѓС‡Р°СЃС‚РЅРёРєР°:"
+        );
+        if (email) {
+          showNotification(`рџ“§ РџСЂРёРіР»Р°С€РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ: ${email}`);
+          addMessage(`РџСЂРёРіР»Р°С€РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ СѓС‡Р°СЃС‚РЅРёРєСѓ: ${email}`, "system");
+        }
+      }
+
+      function createMeeting() {
+        showNotification("рџ“№ РЎРѕР·РґР°РЅРёРµ РІСЃС‚СЂРµС‡Рё...");
+        addMessage(
+          "РЎСЃС‹Р»РєР° РЅР° РІСЃС‚СЂРµС‡Сѓ: https://meet.rulettt.com/room/123456",
+          "system"
+        );
+      }
+
+      function shareScreen() {
+        if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+          navigator.mediaDevices
+            .getDisplayMedia({ video: true })
+            .then((stream) => {
+              showNotification("рџ“є Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР° РЅР°С‡Р°С‚Р°");
+              addMessage("РќР°С‡Р°С‚Р° РґРµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР°", "system");
+            })
+            .catch((err) => {
+              showNotification("вќЊ РћС€РёР±РєР° РґРѕСЃС‚СѓРїР° Рє СЌРєСЂР°РЅСѓ");
+            });
+        } else {
+          showNotification("вќЊ Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР° РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ");
+        }
+      }
+
+      function shareFiles() {
+        document.getElementById("fileInput").click();
+      }
+
+      function createTask() {
+        const task = prompt("Р’РІРµРґРёС‚Рµ РѕРїРёСЃР°РЅРёРµ РЅРѕРІРѕР№ Р·Р°РґР°С‡Рё:");
+        if (task) {
+          showNotification("вњ… Р—Р°РґР°С‡Р° СЃРѕР·РґР°РЅР°");
+          addMessage(`РќРѕРІР°СЏ Р·Р°РґР°С‡Р° СЃРѕР·РґР°РЅР°: ${task}`, "system");
+        }
+      }
+
+      function openDirectChat(userId) {
+        showNotification(`рџ’¬ РћС‚РєСЂС‹С‚ Р»РёС‡РЅС‹Р№ С‡Р°С‚ СЃ ${userId}`);
+      }
+
+      // РћР±СЂР°Р±РѕС‚РєР° Р·Р°РіСЂСѓР·РєРё С„Р°Р№Р»РѕРІ
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", function (e) {
+          const files = Array.from(e.target.files);
+          files.forEach((file) => {
+            addMessage(
+              `рџ“Ћ Р¤Р°Р№Р» Р·Р°РіСЂСѓР¶РµРЅ: ${file.name} (${(file.size / 1024).toFixed(
+                1
+              )} KB)`,
+              "own",
+              "Р’С‹"
+            );
+          });
+        });
+
+      // Р—Р°РєСЂС‹С‚РёРµ emoji picker РїСЂРё РєР»РёРєРµ РІРЅРµ РµРіРѕ
+      document.addEventListener("click", function (e) {
+        const picker = document.getElementById("emojiPicker");
+        const button = e.target.closest(".voice-btn");
+        if (!picker.contains(e.target) && !button) {
+          picker.style.display = "none";
+        }
+      });
+
+      // РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІРѕР№ Р°РєС‚РёРІРЅРѕСЃС‚Рё РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ
+      setInterval(() => {
+        const activities = [
+          'РќРѕРІС‹Рµ РґР°РЅРЅС‹Рµ СЂСѓР»РµС‚РєРё РїРѕР»СѓС‡РµРЅ
+            "',"
+          );
+          'РћР±РЅРѕРІР»РµРЅРёРµ СЃС‚СЂР°С‚РµРіРёРё Р·Р°РІРµСЂС€РµРЅРѕ',
+        'РЎРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ СЃ РѕР±Р»"РєРѕРј',"
+          'РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ СЃРѕС…СЂР°РЅРµРЅРёРµ'
+
+      const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+      addActivity(randomActivity, 'СЃРµР№С‡Р°СЃ');""
+);
+  
+  console.log('рџ¤ќ RULETTT Communication ""stem РіРѕС‚РѕРІР° Рє СЂР°Р±РѕС‚Рµ!');
+log('рџ’¬ Р§Р°С‚, РіРѕР»РѕСЃРѕРІР°СЏ СЃРІСЏР·СЊ Рё РІРёРґРµРѕР·РІРѕРЅРєРё Р°РєС‚РёРІРЅС‹');
+  console.log('рџ“Љ РЎРёСЃС‚РµРјР° СѓРІРµРґРѕРјР»РµРЅРёР№ Р·Р°РїСѓС‰РµРЅР°');
+script>()
+
+             
+             """"
+               ""
+               ""
+
+              
+             
+             
+             });
+""
+            ""
+           ""
+           "");}
+""""""
+         ""
+         "",});
+""
+            ""    );
+""""""
+            (
+              )  )
+.join("");
+
+
+           
+           "" """""""",
+         """"""""  
+
+
+
+
+

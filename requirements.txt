@@ -1,28 +1,65 @@
-# Основные библиотеки для анализа данных
-pandas>=1.5.0          # Работа с таблицами и данными
-numpy>=1.24.0          # Математические вычисления
-matplotlib>=3.6.0      # Создание графиков
-seaborn>=0.12.0        # Красивые графики и визуализация
-plotly>=5.15.0         # Интерактивные графики
+# RULETTT - Project Dependencies# RULETTT - Project Dependencies
 
-# Для работы с базами данных
-sqlite3                # Встроенная БД (уже в Python)
-sqlalchemy>=1.4.0      # Удобная работа с БД
+# ===============================================# ===============================================
 
-# Для веб-запросов (если будем получать данные онлайн)
-requests>=2.28.0       # HTTP запросы
-beautifulsoup4>=4.11.0 # Парсинг веб-страниц
+# Main requirements file that includes:# Main requirements file that includes:
 
-# Для машинного обучения и ИИ
-scikit-learn>=1.2.0    # Алгоритмы машинного обучения
-scipy>=1.10.0          # Научные вычисления
+# - requirements-core.txt (REQUIRED)# - requirements-core.txt (REQUIRED)
 
-# Для создания интерфейса
-streamlit>=1.25.0      # Веб-интерфейс
-tkinter                # Десктопный интерфейс (встроен в Python)
+# - requirements-optional.txt (optional features)# - requirements-optional.txt (optional features)
 
-# Дополнительные утилиты
-python-dateutil>=2.8.0 # Работа с датами
-colorama>=0.4.0        # Цветной текст в консоли
-tqdm>=4.65.0           # Прогресс-бары
-joblib>=1.2.0          # Параллельные вычисления
+##
+
+# INSTALLATION OPTIONS:# INSTALLATION OPTIONS:
+
+##
+
+# 1. Minimal (core only):# 1. Minimal (core only):
+
+#    pip install -r requirements-core.txt#    pip install -r requirements-core.txt
+
+##
+
+# 2. Full (core + optional):# 2. Full (core + optional):
+
+#    pip install -r requirements.txt#    pip install -r requirements.txt
+
+##
+
+# 3. Development (core + optional + dev):# 3. Development (core + optional + dev):
+
+#    pip install -r requirements.txt#    pip install -r requirements.txt
+
+#    pip install -r requirements-dev.txt#    pip install -r requirements-dev.txt
+
+# ===============================================# ===============================================
+
+
+
+# Core dependencies (REQUIRED)# Core dependencies (REQUIRED)
+
+-r requirements-core.txt-r requirements-core.txt
+
+
+
+# Optional dependencies (for full functionality)# Optional dependencies (for full functionality)
+
+-r requirements-optional.txt-r requirements-optional.txt
+
+
+# Аутентификация и безопасность
+pyjwt>=2.8.0           # JWT токены для авторизации
+bcrypt>=4.1.0          # Хэширование паролей
+cryptography>=41.0.0   # Криптография для ключей
+python-dotenv>=1.0.0   # Переменные окружения (.env файлы)
+
+# Планирование задач
+apscheduler>=3.10.0    # Планировщик для ротации ключей и автозадач
+
+# Кэширование сессий (опционально)
+redis>=5.0.0           # Redis клиент для Python
+hiredis>=2.2.0         # Быстрый парсер для Redis
+
+# Дополнительные инструменты
+pillow>=10.0.0         # Работа с изображениями (скриншоты)
+python-magic>=0.4.27   # Определение типов файлов

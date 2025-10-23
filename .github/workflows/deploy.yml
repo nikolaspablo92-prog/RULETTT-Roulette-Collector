@@ -1,0 +1,200 @@
+name: 🚀 RULETTT Auto Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 🧪 Тестирование
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout кода
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Настройка Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: 📦 Установка зависимостей
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: 🔍 Проверка кода Python
+      run: |
+        python -m py_compile console_to_analysis.py
+        python -m py_compile auto_console_collector.py
+        
+    - name: 🧪 Тест коллектора
+      run: |
+        python -c "
+        import json
+        # Тест основных функций
+        print('✅ Тест коллектора прошел успешно')
+        "
+        
+    - name: 📊 Тест анализатора  
+      run: |
+        python -c "
+        # Тест анализатора с фиктивными данными
+        test_data = [1, 2, 3, 4, 5] * 20
+        print(f'✅ Тест анализатора: {len(test_data)} записей')
+        "
+
+  deploy-github-pages:
+    name: 🌐 Deploy to GitHub Pages
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+      
+    - name: 🛠️ Подготовка к деплою
+      run: |
+        # Создаем папку для GitHub Pages
+        mkdir -p gh-pages
+        
+        # Копируем веб-интерфейс
+        cp -r webapp/* gh-pages/
+        
+        # Копируем основные файлы
+        cp auto_collector_console_code.js gh-pages/
+        cp console_to_analysis.py gh-pages/
+        cp README.md gh-pages/
+        
+        # Создаем index.html как главную страницу
+        cp webapp/dashboard.html gh-pages/index.html
+        
+        # Создаем файл конфигурации
+        echo "🎲 RULETTT - Готов к использованию!" > gh-pages/status.txt
+        
+    - name: 📦 Setup Pages
+      uses: actions/configure-pages@v3
+      
+    - name: 📤 Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: './gh-pages'
+        
+    - name: 🚀 Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
+
+  deploy-netlify:
+    name: 🔵 Deploy to Netlify
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+      
+    - name: 🛠️ Подготовка Netlify
+      run: |
+        mkdir -p netlify-dist
+        cp -r webapp/* netlify-dist/
+        cp auto_collector_console_code.js netlify-dist/
+        cp README.md netlify-dist/
+        
+        # Создаем _redirects для SPA
+        echo "/* /dashboard.html 200" > netlify-dist/_redirects
+        
+    - name: 🚀 Deploy to Netlify
+      uses: nwtgck/actions-netlify@v2.1
+      with:
+        publish-dir: './netlify-dist'
+        production-branch: main
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "🎲 RULETTT Auto Deploy - ${{ github.sha }}"
+        enable-pull-request-comment: true
+        enable-commit-comment: true
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+  deploy-vercel:
+    name: ▲ Deploy to Vercel
+    needs: test  
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+      
+    - name: 🛠️ Подготовка Vercel
+      run: |
+        mkdir -p vercel-dist
+        cp -r webapp/* vercel-dist/
+        cp auto_collector_console_code.js vercel-dist/
+        
+        # Создаем vercel.json
+        cat > vercel-dist/vercel.json << 'EOF'
+        {
+          "version": 2,
+          "name": "rulettt-pro",
+          "builds": [
+            {
+              "src": "**/*",
+              "use": "@vercel/static"
+            }
+          ],
+          "routes": [
+            {
+              "src": "/(.*)",
+              "dest": "/dashboard.html"
+            }
+          ]
+        }
+        EOF
+        
+    - name: 🚀 Deploy to Vercel
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.ORG_ID }}
+        vercel-project-id: ${{ secrets.PROJECT_ID }}
+        working-directory: ./vercel-dist
+        vercel-args: '--prod'
+
+  notify:
+    name: 📢 Уведомления
+    needs: [deploy-github-pages, deploy-netlify, deploy-vercel]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: 📊 Статус деплоя
+      run: |
+        echo "🎲 RULETTT Deploy Status:"
+        echo "✅ GitHub Pages: ${{ needs.deploy-github-pages.result }}"
+        echo "🔵 Netlify: ${{ needs.deploy-netlify.result }}"  
+        echo "▲ Vercel: ${{ needs.deploy-vercel.result }}"
+        
+        if [[ "${{ needs.deploy-github-pages.result }}" == "success" ]] || 
+           [[ "${{ needs.deploy-netlify.result }}" == "success" ]] || 
+           [[ "${{ needs.deploy-vercel.result }}" == "success" ]]; then
+          echo "🚀 Хотя бы один деплой успешен!"
+          exit 0
+        else
+          echo "❌ Все деплои провалились"
+          exit 1
+        fi

@@ -1,0 +1,891 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>рџЋІ RULETTT - РџСЂРѕС„РµСЃСЃРёРѕРЅР°Р»СЊРЅР°СЏ Р Р°Р±РѕС‡Р°СЏ РћР±Р»Р°СЃС‚СЊ</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .sidebar {
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 25px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+            font-size: 1.3em;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-bottom: 12px;
+        }
+        
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+        
+        .nav-menu a:hover, .nav-menu a.active {
+            background: rgba(255,255,255,0.1);
+            opacity: 1;
+            transform: translateX(5px);
+        }
+        
+        .nav-menu .icon {
+            font-size: 1.2em;
+        }
+        
+        .main-content {
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 30px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #4CAF50;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            transform: translate(20px, -20px);
+        }
+        
+        .stat-card h4 {
+            color: #4CAF50;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .change {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .change.positive {
+            color: #4CAF50;
+        }
+        
+        .change.negative {
+            color: #f44336;
+        }
+        
+        .activity-panel {
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 25px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        
+        .activity-panel h3 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border-left: 3px solid #2196F3;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(33, 150, 243, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: #2196F3;
+        }
+        
+        .activity-content .title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .activity-content .time {
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+        
+        .chart-container {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 300px;
+            position: relative;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 1.1em;
+        }
+        
+        .collaboration-panel {
+            margin-top: 30px;
+        }
+        
+        .user-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        .user-avatar.online::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .floating-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .fab {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(76, 175, 80, 0.6);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal h2 {
+            margin-bottom: 25px;
+            color: white;
+        }
+        
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            color: white;
+            opacity: 0.7;
+        }
+        
+        .close:hover {
+            opacity: 1;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn.secondary {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 3000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .terminal-simulator {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 20px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .terminal-line {
+            margin-bottom: 5px;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .terminal-line.success {
+            color: #4CAF50;
+        }
+        
+        .terminal-line.error {
+            color: #f44336;
+        }
+        
+        .terminal-line.info {
+            color: #2196F3;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>рџЋІ RULETTT Pro</h1>
+            <div class="header-controls">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>РћРЅР»Р°Р№РЅ</span>
+                </div>
+                <button class="btn secondary" onclick="shareWorkspace()">рџ”— РџРѕРґРµР»РёС‚СЊСЃСЏ</button>
+                <button class="btn" onclick="startCollection()">в–¶пёЏ Р—Р°РїСѓСЃС‚РёС‚СЊ</button>
+            </div>
+        </div>
+        
+        <div class="main-grid">
+            <div class="sidebar">
+                <h3>рџЋЇ РќР°РІРёРіР°С†РёСЏ</h3>
+                <ul class="nav-menu">
+                    <li><a href="#dashboard" class="active"><span class="icon">рџ“Љ</span> Р”Р°С€Р±РѕСЂРґ</a></li>
+                    <li><a href="#collector"><span class="icon">рџЋІ</span> РљРѕР»Р»РµРєС‚РѕСЂ</a></li>
+                    <li><a href="#analyzer"><span class="icon">рџ”¬</span> РђРЅР°Р»РёР·Р°С‚РѕСЂ</a></li>
+                    <li><a href="#strategies"><span class="icon">рџЋЇ</span> РЎС‚СЂР°С‚РµРіРёРё</a></li>
+                    <li><a href="#data"><span class="icon">рџ’ѕ</span> Р”Р°РЅРЅС‹Рµ</a></li>
+                    <li><a href="#team"><span class="icon">рџ‘Ґ</span> РљРѕРјР°РЅРґР°</a></li>
+                    <li><a href="#settings"><span class="icon">вљ™пёЏ</span> РќР°СЃС‚СЂРѕР№РєРё</a></li>
+                </ul>
+                
+                <div class="mt-30">
+                    <h3>рџЋ° РСЃС‚РѕС‡РЅРёРє РґР°РЅРЅС‹С…</h3>
+                    <div class="mt-15">
+                        <div class="stat-card" class="stat-card-compact">
+                            <div class="flex justify-between align-center">
+                                <span>Paddypower.com</span>
+                                <span class="color-orange" title="РћР¶РёРґР°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё">в—Џ</span>
+                            </div>
+                            <div class="fs-085 opacity-07 mt-10">
+                                РЎС‚Р°С‚СѓСЃ: РўРµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ
+                            </div>
+                        </div>
+                        <div class="stat-card" class="bg-warning">
+                            <div class="fs-09">
+                                <strong>в„№пёЏ РРЅС„РѕСЂРјР°С†РёСЏ:</strong><br>
+                                РЎРµР№С‡Р°СЃ РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ С‚РµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ.<br>
+                                Р”Р»СЏ СЃР±РѕСЂР° СЂРµР°Р»СЊРЅС‹С… РґР°РЅРЅС‹С… РЅР°СЃС‚СЂРѕР№С‚Рµ JavaScript РєРѕР»Р»РµРєС‚РѕСЂ.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div id="dashboard-section">
+                    <h2 class="mb-25">рџ“Љ Р”Р°С€Р±РѕСЂРґ РІ Р РµР°Р»СЊРЅРѕРј Р’СЂРµРјРµРЅРё</h2>
+                    
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <h4>РЎРѕР±СЂР°РЅРѕ Р”Р°РЅРЅС‹С…</h4>
+                            <div class="value" id="total-spins">1,247</div>
+                            <div class="change positive">+23 Р·Р° С‡Р°СЃ</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" class="progress-75"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <h4>РђРєС‚РёРІРЅС‹Рµ РЎРµСЃСЃРёРё</h4>
+                            <div class="value" id="active-sessions">3</div>
+                            <div class="change positive">+1 РЅРѕРІР°СЏ</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" class="progress-60"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <h4>РўРѕС‡РЅРѕСЃС‚СЊ РџСЂРѕРіРЅРѕР·РѕРІ</h4>
+                            <div class="value" id="accuracy">68.4%</div>
+                            <div class="change positive">+2.3%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" class="progress-68"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <h4>РљРѕРјР°РЅРґР° РћРЅР»Р°Р№РЅ</h4>
+                            <div class="value" id="team-online">2</div>
+                            <div class="change">РёР· 3 СѓС‡Р°СЃС‚РЅРёРєРѕРІ</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" class="progress-67"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            рџ“€ Р“СЂР°С„РёРє РґР°РЅРЅС‹С… РІ СЂРµР°Р»СЊРЅРѕРј РІСЂРµРјРµРЅРё
+                            <br><small>Р—РґРµСЃСЊ Р±СѓРґРµС‚ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊСЃСЏ РґРёРЅР°РјРёРєР° СЃР±РѕСЂР° РґР°РЅРЅС‹С…</small>
+                        </div>
+                    </div>
+                    
+                    <div class="collaboration-panel">
+                        <h3>рџ¤ќ РђРєС‚РёРІРЅР°СЏ РљРѕРјР°РЅРґР°</h3>
+                        <div class="user-list">
+                            <div class="user-avatar online" title="Р’С‹ - РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ">РЇ</div>
+                            <div class="user-avatar online" title="РљРѕР»Р»РµРєС‚РѕСЂ - РћРЅР»Р°Р№РЅ">Рљ</div>
+                            <div class="user-avatar" title="РђРЅР°Р»РёС‚РёРє - РћС„Р»Р°Р№РЅ">Рђ</div>
+                            <div class="user-avatar" title="Р”РѕР±Р°РІРёС‚СЊ СѓС‡Р°СЃС‚РЅРёРєР°" onclick="inviteUser()" class="user-avatar-add">+</div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-simulator" id="terminal">
+                        <div class="terminal-line success">рџЋІ RULETTT СЃРёСЃС‚РµРјР° РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅР°</div>
+                        <div class="terminal-line info">рџ“Ў РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє GitHub Codespace: СѓСЃРїРµС€РЅРѕ</div>
+                        <div class="terminal-line info">рџ”— Live Share Р°РєС‚РёРІРёСЂРѕРІР°РЅ</div>
+                        <div class="terminal-line success">вњ… Р’СЃРµ СЃРёСЃС‚РµРјС‹ РіРѕС‚РѕРІС‹ Рє СЂР°Р±РѕС‚Рµ</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-panel">
+                <h3>рџ“‹ РђРєС‚РёРІРЅРѕСЃС‚СЊ</h3>
+                <div class="activity-feed">
+                    <div class="activity-item">
+                        <div class="activity-icon">рџЋІ</div>
+                        <div class="activity-content">
+                            <div class="title">РЎРёСЃС‚РµРјР° РіРѕС‚РѕРІР° Рє СЂР°Р±РѕС‚Рµ СЃ Paddypower.com</div>
+                            <div class="time">РўРµСЃС‚РѕРІС‹Р№ СЂРµР¶РёРј</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">рџ‘¤</div>
+                        <div class="activity-content">
+                            <div class="title">РљРѕР»Р»РµРєС‚РѕСЂ РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ</div>
+                            <div class="time">5 РјРёРЅСѓС‚ РЅР°Р·Р°Рґ</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">рџ“Љ</div>
+                        <div class="activity-content">
+                            <div class="title">РђРЅР°Р»РёР· СЃС‚СЂР°С‚РµРіРёР№ Р·Р°РІРµСЂС€РµРЅ</div>
+                            <div class="time">10 РјРёРЅСѓС‚ РЅР°Р·Р°Рґ</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">рџ’ѕ</div>
+                        <div class="activity-content">
+                            <div class="title">Р”Р°РЅРЅС‹Рµ СЌРєСЃРїРѕСЂС‚РёСЂРѕРІР°РЅС‹</div>
+                            <div class="time">15 РјРёРЅСѓС‚ РЅР°Р·Р°Рґ</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">рџ”„</div>
+                        <div class="activity-content">
+                            <div class="title">РђРІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ</div>
+                            <div class="time">30 РјРёРЅСѓС‚ РЅР°Р·Р°Рґ</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-20">
+                    <h4 class="color-green mb-15">вљЎ Р‘С‹СЃС‚СЂС‹Рµ Р”РµР№СЃС‚РІРёСЏ</h4>
+                    <button class="btn" onclick="exportData()" class="w-100 mb-10">рџ“Ґ Р­РєСЃРїРѕСЂС‚ Р”Р°РЅРЅС‹С…</button>
+                    <button class="btn secondary" onclick="runAnalysis()" class="w-100 mb-10">рџ”¬ Р—Р°РїСѓСЃС‚РёС‚СЊ РђРЅР°Р»РёР·</button>
+                    <button class="btn" onclick="clearData()" class="w-100">рџ—‘пёЏ РћС‡РёСЃС‚РёС‚СЊ Р”Р°РЅРЅС‹Рµ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="floating-controls">
+        <div class="fab" onclick="openChat()" title="Р§Р°С‚ РєРѕРјР°РЅРґС‹">рџ’¬</div>
+        <div class="fab" onclick="screenShare()" title="Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР°">рџ“є</div>
+        <div class="fab" onclick="openSettings()" title="РќР°СЃС‚СЂРѕР№РєРё">вљ™пёЏ</div>
+    </div>
+    
+    <!-- РњРѕРґР°Р»СЊРЅС‹Рµ РѕРєРЅР° -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('chatModal')">&times;</span>
+            <h2>рџ’¬ Р§Р°С‚ РљРѕРјР°РЅРґС‹</h2>
+            <div id="chat-messages" class="chat-container">
+                <div class="mb-15"><strong>РЎРёСЃС‚РµРјР°:</strong> Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ РІ С‡Р°С‚ РєРѕРјР°РЅРґС‹ RULETTT!</div>
+                <div class="mb-15"><strong>РљРѕР»Р»РµРєС‚РѕСЂ:</strong> Р“РѕС‚РѕРІ Рє СЃР±РѕСЂСѓ РґР°РЅРЅС‹С… СЃ Paddypower.com</div>
+                <div class="mb-15"><strong>AI:</strong> РЎРµР№С‡Р°СЃ РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ С‚РµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ РґР»СЏ РґРµРјРѕРЅСЃС‚СЂР°С†РёРё</div>
+                <div class="mb-15"><strong>Р’С‹:</strong> РћС‚Р»РёС‡РЅРѕ! РЇ Р±СѓРґСѓ Р°РЅР°Р»РёР·РёСЂРѕРІР°С‚СЊ РґР°РЅРЅС‹Рµ</div>
+            </div>
+            <div class="flex gap-10">
+                <input type="text" id="chatInput" placeholder="Р’РІРµРґРёС‚Рµ СЃРѕРѕР±С‰РµРЅРёРµ..." class="chat-input">
+                <button class="btn" onclick="sendMessage()">РћС‚РїСЂР°РІРёС‚СЊ</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('settingsModal')">&times;</span>
+            <h2>вљ™пёЏ РќР°СЃС‚СЂРѕР№РєРё РџСЂРѕРµРєС‚Р°</h2>
+            <div class="form-section">
+                <h3>рџЋІ РќР°СЃС‚СЂРѕР№РєРё РљРѕР»Р»РµРєС‚РѕСЂР°</h3>
+                <label class="form-label">
+                    <input type="checkbox" checked> РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ СЃР±РѕСЂ РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ
+                </label>
+                <label class="form-label">
+                    <input type="checkbox" checked> РЈРІРµРґРѕРјР»РµРЅРёСЏ Рѕ РЅРѕРІС‹С… РґР°РЅРЅС‹С…
+                </label>
+                <label class="form-label">
+                    <input type="checkbox"> РЎР±РѕСЂ СЃ РјРѕР±РёР»СЊРЅС‹С… РєР°Р·РёРЅРѕ
+                </label>
+            </div>
+            <div class="form-section">
+                <h3>рџ¤ќ РќР°СЃС‚СЂРѕР№РєРё РЎРѕРІРјРµСЃС‚РЅРѕР№ Р Р°Р±РѕС‚С‹</h3>
+                <label class="form-label">
+                    <input type="checkbox" checked> РџРѕРєР°Р·С‹РІР°С‚СЊ РєСѓСЂСЃРѕСЂС‹ СѓС‡Р°СЃС‚РЅРёРєРѕРІ
+                </label>
+                <label class="form-label">
+                    <input type="checkbox" checked> РђРІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ
+                </label>
+                <label class="form-label">
+                    <input type="checkbox"> Р—РІСѓРєРѕРІС‹Рµ СѓРІРµРґРѕРјР»РµРЅРёСЏ
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- РЈРІРµРґРѕРјР»РµРЅРёСЏ -->
+    <div id="notification" class="notification"></div>
+    
+    <script>
+        // РћР±РЅРѕРІР»РµРЅРёРµ РґР°РЅРЅС‹С… РІ СЂРµР°Р»СЊРЅРѕРј РІСЂРµРјРµРЅРё
+        function updateDashboard() {
+            const totalSpins = document.getElementById('total-spins');
+            const currentValue = parseInt(totalSpins.textContent.replace(',', ''));
+            totalSpins.textContent = (currentValue + Math.floor(Math.random() * 5)).toLocaleString();
+            
+            const accuracy = document.getElementById('accuracy');
+            const currentAccuracy = parseFloat(accuracy.textContent);
+            const newAccuracy = currentAccuracy + (Math.random() - 0.5) * 0.2;
+            accuracy.textContent = newAccuracy.toFixed(1) + '%';
+        }
+        
+        // РћР±РЅРѕРІР»СЏРµРј РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ
+        setInterval(updateDashboard, 30000);
+        
+        // Р¤СѓРЅРєС†РёРё СѓРїСЂР°РІР»РµРЅРёСЏ
+        function shareWorkspace() {
+            const url = 'https://github.com/nikolaspablo92-prog/RULETTT-Roulette-Collector';
+            navigator.clipboard.writeText(url);
+            showNotification('рџ”— РЎСЃС‹Р»РєР° РЅР° РїСЂРѕРµРєС‚ СЃРєРѕРїРёСЂРѕРІР°РЅР°!');
+        }
+        
+        function startCollection() {
+            showNotification('рџЋІ РљРѕР»Р»РµРєС‚РѕСЂ СЂСѓР»РµС‚РєРё Р·Р°РїСѓС‰РµРЅ!');
+            addTerminalLine('рџЋІ Р—Р°РїСѓСЃРє Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРіРѕ СЃР±РѕСЂР° РґР°РЅРЅС‹С…...', 'info');
+            setTimeout(() => {
+                addTerminalLine('вњ… РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє РєР°Р·РёРЅРѕ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ', 'success');
+            }, 2000);
+        }
+        
+        function exportData() {
+            showNotification('рџ“Ґ Р­РєСЃРїРѕСЂС‚ РґР°РЅРЅС‹С… РЅР°С‡Р°С‚...');
+            // РЎРѕР·РґР°РµРј С„РёРєС‚РёРІРЅС‹Рµ РґР°РЅРЅС‹Рµ РґР»СЏ РґРµРјРѕРЅСЃС‚СЂР°С†РёРё
+            const data = {
+                timestamp: new Date().toISOString(),
+                totalSpins: 1247,
+                sessions: 3,
+                accuracy: 68.4
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'rulettt_data_' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            showNotification('вњ… Р”Р°РЅРЅС‹Рµ СЌРєСЃРїРѕСЂС‚РёСЂРѕРІР°РЅС‹!');
+        }
+        
+        function runAnalysis() {
+            showNotification('рџ”¬ Р—Р°РїСѓСЃРє Р°РЅР°Р»РёР·Р° СЃС‚СЂР°С‚РµРіРёР№...');
+            addTerminalLine('рџ”¬ РђРЅР°Р»РёР· РґР°РЅРЅС‹С… Р·Р°РїСѓС‰РµРЅ...', 'info');
+            setTimeout(() => {
+                addTerminalLine('рџ“Љ Р›СѓС‡С€Р°СЏ СЃС‚СЂР°С‚РµРіРёСЏ: РњР°СЂС‚РёРЅРіРµР№Р» РЅР° РєСЂР°СЃРЅРѕРµ', 'success');
+                addTerminalLine('рџ’° РћР¶РёРґР°РµРјР°СЏ РїСЂРёР±С‹Р»СЊ: +15.2 РµРґРёРЅРёС†', 'success');
+            }, 3000);
+        }
+        
+        function clearData() {
+            if (confirm('Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РѕС‡РёСЃС‚РёС‚СЊ РІСЃРµ РґР°РЅРЅС‹Рµ?')) {
+                showNotification('рџ—‘пёЏ Р”Р°РЅРЅС‹Рµ РѕС‡РёС‰РµРЅС‹');
+                addTerminalLine('рџ—‘пёЏ Р›РѕРєР°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РѕС‡РёС‰РµРЅС‹', 'info');
+            }
+        }
+        
+        function inviteUser() {
+            const email = prompt('Р’РІРµРґРёС‚Рµ email РёР»Рё GitHub username СѓС‡Р°СЃС‚РЅРёРєР°:');
+            if (email) {
+                showNotification('рџ“§ РџСЂРёРіР»Р°С€РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ: ' + email);
+                addActivity('рџ‘¤ РџСЂРёРіР»Р°С€РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ', 'С‚РѕР»СЊРєРѕ С‡С‚Рѕ');
+            }
+        }
+        
+        function openChat() {
+            document.getElementById('chatModal').style.display = 'block';
+        }
+        
+        function openSettings() {
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+        
+        function screenShare() {
+            showNotification('рџ“є Р”РµРјРѕРЅСЃС‚СЂР°С†РёСЏ СЌРєСЂР°РЅР° (С„СѓРЅРєС†РёСЏ РІ СЂР°Р·СЂР°Р±РѕС‚РєРµ)');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (message) {
+                const chatMessages = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.style.marginBottom = '15px';
+                messageDiv.innerHTML = '<strong>Р’С‹:</strong> ' + message;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                input.value = '';
+                
+                // РРјРёС‚РёСЂСѓРµРј РѕС‚РІРµС‚
+                setTimeout(() => {
+                    const replyDiv = document.createElement('div');
+                    replyDiv.style.marginBottom = '15px';
+                    replyDiv.innerHTML = '<strong>РЎРёСЃС‚РµРјР°:</strong> РЎРѕРѕР±С‰РµРЅРёРµ РїРѕР»СѓС‡РµРЅРѕ!';
+                    chatMessages.appendChild(replyDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1000);
+            }
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function addTerminalLine(text, type = 'info') {
+            const terminal = document.getElementById('terminal');
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            line.textContent = text;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function addActivity(title, time) {
+            const feed = document.querySelector('.activity-feed');
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.innerHTML = `
+                <div class="activity-icon">рџ””</div>
+                <div class="activity-content">
+                    <div class="title">${title}</div>
+                    <div class="time">${time}</div>
+                </div>
+            `;
+            feed.insertBefore(item, feed.firstChild);
+        }
+        
+        // РћР±СЂР°Р±РѕС‚РєР° РЅР°Р¶Р°С‚РёР№ РєР»Р°РІРёС€
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.id === 'chatInput') {
+                sendMessage();
+            }
+            if (e.key === 'Escape') {
+                closeModal('chatModal');
+                closeModal('settingsModal');
+            }
+        });
+        
+        // Р—Р°РєСЂС‹С‚РёРµ РјРѕРґР°Р»СЊРЅС‹С… РѕРєРѕРЅ РїСЂРё РєР»РёРєРµ РІРЅРµ РёС…
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+        
+        // Р”РѕР±Р°РІР»РµРЅРёРµ Р°РєС‚РёРІРЅРѕСЃС‚Рё РїСЂРё Р·Р°РіСЂСѓР·РєРµ
+        setTimeout(() => {
+            addActivity('Р”Р°С€Р±РѕСЂРґ Р·Р°РіСЂСѓР¶РµРЅ', 'С‚РѕР»СЊРєРѕ С‡С‚Рѕ');
+        }, 1000);
+        
+        // РђРЅРёРјР°С†РёСЏ Р·Р°РіСЂСѓР·РєРё С‚РµСЂРјРёРЅР°Р»Р°
+        document.querySelectorAll('.terminal-line').forEach((line, index) => {
+            line.style.animationDelay = `${index * 0.5}s`;
+        });
+        
+        console.log('рџЋІ RULETTT Pro Dashboard Р·Р°РіСЂСѓР¶РµРЅ!');
+        console.log('рџ’Ў Р’СЃРµ С„СѓРЅРєС†РёРё РёРЅС‚РµСЂС„РµР№СЃР° Р°РєС‚РёРІРЅС‹');
+        console.log('рџљЂ Р“РѕС‚РѕРІ Рє СЃРѕРІРјРµСЃС‚РЅРѕР№ СЂР°Р±РѕС‚Рµ!');
+    </script>
+</body>
+</html>
+
+

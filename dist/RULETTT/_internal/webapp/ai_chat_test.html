@@ -1,0 +1,263 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+  <head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>рџ¤– РўРµСЃС‚ AI Р§Р°С‚Р° RULETTT</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+
+      .test-button {
+        background: linear-gradient(45deg, #4caf50, #45a049);
+        border: none;
+        padding: 10px 20px;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+        font-weight: bold;
+      }
+
+      .ai-button {
+        background: linear-gradient(45deg, #9c27b0, #673ab7);
+      }
+
+      .result {
+        margin: 10px 0;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        border-left: 4px solid #4caf50;
+        white-space: pre-wrap;
+      }
+
+      .error {
+        border-left-color: #f44336;
+        background: rgba(244, 67, 54, 0.1);
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border-radius: 5px;
+      }
+
+      input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>рџ¤– РўРµСЃС‚ AI Р§Р°С‚Р° RULETTT</h1>
+      <p>РџСЂРѕРІРµСЂСЏРµРј РёРЅС‚РµРіСЂР°С†РёСЋ AI-Р°СЃСЃРёСЃС‚РµРЅС‚Р° СЃ СЃРёСЃС‚РµРјРѕР№ С‡Р°С‚Р°</p>
+
+      <div class="test-section">
+        <h3>рџ”Ќ РџСЂРѕРІРµСЂРєР° API</h3>
+        <button class="test-button" onclick="testAPI()">РџСЂРѕРІРµСЂРёС‚СЊ API</button>
+        <div id="apiResult" class="result hidden"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>рџ¤– РўРµСЃС‚ AI РћС‚РІРµС‚РѕРІ</h3>
+        <input
+          type="text"
+          id="aiMessage"
+          placeholder="Р’РІРµРґРёС‚Рµ СЃРѕРѕР±С‰РµРЅРёРµ РґР»СЏ AI (РЅР°РїСЂРёРјРµСЂ: РїСЂРёРІРµС‚, РїРѕРјРѕС‰СЊ, СЃС‚Р°С‚РёСЃС‚РёРєР°)"
+        />
+        <button class="test-button ai-button" onclick="testAI()">
+          РЎРїСЂРѕСЃРёС‚СЊ AI
+        </button>
+        <div id="aiResult" class="result hidden"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>рџ“ќ Р‘С‹СЃС‚СЂС‹Рµ С‚РµСЃС‚С‹</h3>
+        <button class="test-button ai-button" onclick="quickTest('РїСЂРёРІРµС‚')">
+          РџСЂРёРІРµС‚
+        </button>
+        <button class="test-button ai-button" onclick="quickTest('РїРѕРјРѕС‰СЊ')">
+          РџРѕРјРѕС‰СЊ
+        </button>
+        <button class="test-button ai-button" onclick="quickTest('СЃС‚Р°С‚РёСЃС‚РёРєР°')">
+          РЎС‚Р°С‚РёСЃС‚РёРєР°
+        </button>
+        <button class="test-button ai-button" onclick="quickTest('СЃС‚СЂР°С‚РµРіРёСЏ')">
+          РЎС‚СЂР°С‚РµРіРёСЏ
+        </button>
+        <button class="test-button ai-button" onclick="quickTest('РєРѕРјР°РЅРґР°')">
+          РљРѕРјР°РЅРґР°
+        </button>
+      </div>
+
+      <div class="test-section">
+        <h3>рџ’¬ РРЅС‚РµРіСЂР°С†РёСЏ СЃ С‡Р°С‚РѕРј</h3>
+        <button class="test-button" onclick="testChatIntegration()">
+          РџСЂРѕРІРµСЂРёС‚СЊ С‡Р°С‚
+        </button>
+        <div id="chatResult" class="result hidden"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>рџљЂ РџРѕР»РЅС‹Р№ С‡Р°С‚</h3>
+        <p>РџРѕСЃР»Рµ С‚РµСЃС‚РѕРІ РѕС‚РєСЂРѕР№С‚Рµ РїРѕР»РЅС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ:</p>
+        <button class="test-button" onclick="openFullChat()">
+          РћС‚РєСЂС‹С‚СЊ Global Chat
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:5000";
+
+      async function testAPI() {
+        const result = document.getElementById("apiResult");
+        result.classList.remove("hidden");
+        result.textContent = "рџ”„ РџСЂРѕРІРµСЂСЏРµРј API...";
+        result.className = "result";
+
+        try {
+          const response = await fetch(`${API_BASE}/api/health`);
+          if (response.ok) {
+            const data = await response.json();
+            result.textContent = `вњ… API СЂР°Р±РѕС‚Р°РµС‚!\nР’СЂРµРјСЏ: ${data.timestamp}\nР‘Р”: ${data.database_status}`;
+          } else {
+            throw new Error(`HTTP ${response.status}`);
+          }
+        } catch (error) {
+          result.textContent = `вќЊ РћС€РёР±РєР°: ${error.message}\n\nРЈР±РµРґРёС‚РµСЃСЊ С‡С‚Рѕ Р·Р°РїСѓС‰РµРЅ: py api_server.py`;
+          result.className = "result error";
+        }
+      }
+
+      async function testAI() {
+        const message = document.getElementById("aiMessage").value.trim();
+        if (!message) {
+          alert("Р’РІРµРґРёС‚Рµ СЃРѕРѕР±С‰РµРЅРёРµ!");
+          return;
+        }
+
+        const result = document.getElementById("aiResult");
+        result.classList.remove("hidden");
+        result.textContent = `рџ¤– РћС‚РїСЂР°РІР»СЏСЋ "${message}" AI Р°СЃСЃРёСЃС‚РµРЅС‚Сѓ...`;
+        result.className = "result";
+
+        try {
+          const response = await fetch(`${API_BASE}/api/chat/ai`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: message,
+              session_id: "ai_test",
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            result.textContent = `вњ… AI РѕС‚РІРµС‚РёР» (ID: ${data.message_id}):\n\n${data.ai_response}`;
+          } else {
+            const error = await response.text();
+            throw new Error(`HTTP ${response.status}: ${error}`);
+          }
+        } catch (error) {
+          result.textContent = `вќЊ РћС€РёР±РєР° AI: ${error.message}`;
+          result.className = "result error";
+        }
+      }
+
+      async function quickTest(message) {
+        document.getElementById("aiMessage").value = message;
+        await testAI();
+      }
+
+      async function testChatIntegration() {
+        const result = document.getElementById("chatResult");
+        result.classList.remove("hidden");
+        result.textContent = "рџ”„ РџСЂРѕРІРµСЂСЏРµРј РёРЅС‚РµРіСЂР°С†РёСЋ СЃ С‡Р°С‚РѕРј...";
+        result.className = "result";
+
+        try {
+          // РћС‚РїСЂР°РІР»СЏРµРј AI Р·Р°РїСЂРѕСЃ
+          const aiResponse = await fetch(`${API_BASE}/api/chat/ai`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: "С‚РµСЃС‚ РёРЅС‚РµРіСЂР°С†РёРё",
+              session_id: "integration_test",
+            }),
+          });
+
+          if (!aiResponse.ok) throw new Error("AI Р·Р°РїСЂРѕСЃ РЅРµСѓСЃРїРµС€РµРЅ");
+
+          // РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ СЃРѕРѕР±С‰РµРЅРёРµ РїРѕРїР°Р»Рѕ РІ С‡Р°С‚
+          const chatResponse = await fetch(
+            `${API_BASE}/api/chat?session_id=integration_test&limit=5`
+          );
+          if (!chatResponse.ok) throw new Error("Р§Р°С‚ РЅРµРґРѕСЃС‚СѓРїРµРЅ");
+
+          const chatData = await chatResponse.json();
+          const aiMessages = chatData.messages.filter((msg) =>
+            msg.username.includes("рџ¤–")
+          );
+
+          if (aiMessages.length > 0) {
+            result.textContent = `вњ… РРЅС‚РµРіСЂР°С†РёСЏ СЂР°Р±РѕС‚Р°РµС‚!\n\nAI СЃРѕРѕР±С‰РµРЅРёР№: ${
+              aiMessages.length
+            }\nРџРѕСЃР»РµРґРЅРµРµ: "${aiMessages[
+              aiMessages.length - 1
+            ].message.substring(0, 100)}..."`;
+          } else {
+            result.textContent = `вљ пёЏ AI РѕС‚РІРµС‚РёР», РЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ РЅРµ РЅР°Р№РґРµРЅРѕ РІ С‡Р°С‚Рµ\nР’СЃРµРіРѕ СЃРѕРѕР±С‰РµРЅРёР№ РІ С‡Р°С‚Рµ: ${chatData.count}`;
+          }
+        } catch (error) {
+          result.textContent = `вќЊ РћС€РёР±РєР° РёРЅС‚РµРіСЂР°С†РёРё: ${error.message}`;
+          result.className = "result error";
+        }
+      }
+
+      function openFullChat() {
+        window.open("global_chat.html", "_blank");
+      }
+
+      // РђРІС‚РѕС‚РµСЃС‚ РїСЂРё Р·Р°РіСЂСѓР·РєРµ
+      window.onload = function () {
+        setTimeout(testAPI, 500);
+      };
+    </script>
+  </body>
+</html>
+

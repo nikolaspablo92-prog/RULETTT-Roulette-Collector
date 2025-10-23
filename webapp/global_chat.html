@@ -1,0 +1,520 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>рџ’¬ RULETTT - РћР±С‰РёР№ Р§Р°С‚</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .username-input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        .username-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .chat-status {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+        
+        .message.own {
+            background: rgba(76, 175, 80, 0.8);
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .message.other {
+            background: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+        }
+        
+        .message.system {
+            background: rgba(33, 150, 243, 0.2);
+            border-left: 4px solid #2196f3;
+            align-self: center;
+            text-align: center;
+            font-style: italic;
+            max-width: 60%;
+        }
+        
+        .message.ai {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.2), rgba(103, 58, 183, 0.2));
+            border-left: 4px solid #9c27b0;
+            align-self: flex-start;
+            max-width: 80%;
+            box-shadow: 0 2px 10px rgba(156, 39, 176, 0.2);
+        }
+        
+        .message-header {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .message-time {
+            font-size: 0.7em;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+        
+        .chat-input-area {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+        }
+        
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .send-btn {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .ai-btn {
+            padding: 12px 16px;
+            background: linear-gradient(45deg, #9c27b0, #673ab7);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .ai-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+        }
+        
+        .online-users {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+        }
+        
+        .user-avatar {
+            width: 20px;
+            height: 20px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+        
+        .connection-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .connected {
+            background: #4caf50;
+            animation: pulse 2s infinite;
+        }
+        
+        .disconnected {
+            background: #f44336;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <div>
+            <h2>рџ’¬ РћР±С‰РёР№ Р§Р°С‚ RULETTT</h2>
+            <div class="user-info">
+                <label>Р’Р°С€Рµ РёРјСЏ:</label>
+                <input 
+                    type="text" 
+                    id="usernameInput" 
+                    class="username-input"
+                    placeholder="Р’РІРµРґРёС‚Рµ РёРјСЏ..." 
+                    onchange="updateUsername()"
+                >
+            </div>
+        </div>
+        <div>
+            <span class="connection-indicator" id="connectionIndicator"></span>
+            <span class="chat-status" id="chatStatus">РџРѕРґРєР»СЋС‡РµРЅРёРµ...</span>
+        </div>
+    </div>
+    
+    <div class="online-users" id="onlineUsers">
+        <strong>рџ‘Ґ РћРЅР»Р°Р№РЅ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё:</strong>
+        <div id="usersList">Р—Р°РіСЂСѓР·РєР°...</div>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <div class="loading">Р—Р°РіСЂСѓР·РєР° СЃРѕРѕР±С‰РµРЅРёР№...</div>
+    </div>
+    
+    <div class="chat-input-area">
+        <div class="chat-input">
+            <textarea 
+                class="input-field" 
+                id="messageInput" 
+                placeholder="Р’РІРµРґРёС‚Рµ СЃРѕРѕР±С‰РµРЅРёРµ... (Enter РґР»СЏ РѕС‚РїСЂР°РІРєРё, @ai РґР»СЏ AI-Р°СЃСЃРёСЃС‚РµРЅС‚Р°)"
+                rows="1"
+            ></textarea>
+            <button class="send-btn" onclick="sendMessage()">РћС‚РїСЂР°РІРёС‚СЊ</button>
+            <button class="ai-btn" onclick="askAI()">рџ¤– AI</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':5000';
+        let lastMessageCount = 0;
+        
+        // Р¤СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ API
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            let message = input.value.trim();
+            const username = document.getElementById('usernameInput').value.trim() || 'РђРЅРѕРЅРёРј';
+            
+            if (!message) return;
+            
+            // РџСЂРѕРІРµСЂСЏРµРј РєРѕРјР°РЅРґСѓ @ai
+            if (message.toLowerCase().startsWith('@ai')) {
+                const aiMessage = message.substring(3).trim() || 'РїРѕРјРѕС‰СЊ';
+                input.value = aiMessage;
+                await askAI();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        message: message,
+                        session_id: 'rulettt_main_chat'
+                    })
+                });
+                
+                if (response.ok) {
+                    input.value = '';
+                    input.style.height = 'auto';
+                    console.log('вњ… РЎРѕРѕР±С‰РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ');
+                    // РЎСЂР°Р·Сѓ РѕР±РЅРѕРІР»СЏРµРј С‡Р°С‚
+                    loadChatMessages();
+                } else {
+                    throw new Error('РћС€РёР±РєР° РѕС‚РїСЂР°РІРєРё');
+                }
+                
+            } catch (error) {
+                console.error('вќЊ РћС€РёР±РєР°:', error);
+                addSystemMessage('вљ пёЏ РћС€РёР±РєР° РѕС‚РїСЂР°РІРєРё СЃРѕРѕР±С‰РµРЅРёСЏ');
+                updateConnectionStatus(false, 'РћС€РёР±РєР° СЃРѕРµРґРёРЅРµРЅРёСЏ');
+            }
+        }
+        
+        async function loadChatMessages() {
+            try {
+                const response = await fetch(`${API_BASE}/api/chat?session_id=rulettt_main_chat&limit=50`);
+                
+                if (!response.ok) {
+                    throw new Error('РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё');
+                }
+                
+                const data = await response.json();
+                
+                // РћР±РЅРѕРІР»СЏРµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё РµСЃС‚СЊ РЅРѕРІС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ
+                if (data.count !== lastMessageCount) {
+                    displayMessages(data.messages);
+                    lastMessageCount = data.count;
+                }
+                
+                updateConnectionStatus(true, `рџ’¬ ${data.count} СЃРѕРѕР±С‰РµРЅРёР№`);
+                
+            } catch (error) {
+                console.error('вќЊ РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё:', error);
+                updateConnectionStatus(false, 'РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ');
+            }
+        }
+        
+        async function loadActiveUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/api/chat/users?session_id=rulettt_main_chat`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayUsers(data.users);
+                }
+                
+            } catch (error) {
+                console.error('вќЊ РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№:', error);
+            }
+        }
+        
+        // Р¤СѓРЅРєС†РёРё РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ
+        function displayMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            const currentUsername = document.getElementById('usernameInput').value.trim() || 'РђРЅРѕРЅРёРј';
+            
+            container.innerHTML = '';
+            
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                let messageType = msg.username === currentUsername ? 'own' : 'other';
+                
+                // РћРїСЂРµРґРµР»СЏРµРј С‚РёРї СЃРѕРѕР±С‰РµРЅРёСЏ РґР»СЏ AI
+                if (msg.username.includes('рџ¤–') || msg.message_type === 'ai') {
+                    messageType = 'ai';
+                }
+                
+                messageDiv.className = `message ${messageType}`;
+                
+                const time = new Date(msg.timestamp).toLocaleTimeString('ru-RU', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">${msg.username}</div>
+                    <div>${escapeHtml(msg.message).replace(/\n/g, '<br>')}</div>
+                    <div class="message-time">${time}</div>
+                `;
+                
+                container.appendChild(messageDiv);
+            });
+            
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // AI РђСЃСЃРёСЃС‚РµРЅС‚
+        async function askAI() {
+            const messageInput = document.getElementById('messageInput');
+            let message = messageInput.value.trim();
+            
+            if (!message) {
+                message = 'РїРѕРјРѕС‰СЊ'; // РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РїРѕРєР°Р·С‹РІР°РµРј РїРѕРјРѕС‰СЊ
+            }
+            
+            try {
+                addSystemMessage('рџ¤– Р—Р°РїСЂР°С€РёРІР°СЋ AI Р°СЃСЃРёСЃС‚РµРЅС‚Р°...');
+                
+                const response = await fetch(`${API_BASE}/api/chat/ai`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        session_id: 'rulettt_main_chat'
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log('вњ… AI РѕС‚РІРµС‚ РїРѕР»СѓС‡РµРЅ');
+                    messageInput.value = ''; // РћС‡РёС‰Р°РµРј РїРѕР»Рµ
+                    loadChatMessages(); // РћР±РЅРѕРІР»СЏРµРј С‡Р°С‚
+                } else {
+                    throw new Error('РћС€РёР±РєР° AI');
+                }
+                
+            } catch (error) {
+                console.error('вќЊ РћС€РёР±РєР° AI:', error);
+                addSystemMessage('вљ пёЏ РћС€РёР±РєР° РѕР±СЂР°С‰РµРЅРёСЏ Рє AI Р°СЃСЃРёСЃС‚РµРЅС‚Сѓ');
+            }
+        }
+        
+        function displayUsers(users) {
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<div>РќРµС‚ Р°РєС‚РёРІРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№</div>';
+                return;
+            }
+            
+            const usersHtml = users.map(user => `
+                <div class="user-item">
+                    <div class="user-avatar">рџ‘¤</div>
+                    <span>${escapeHtml(user.username)}</span>
+                </div>
+            `).join('');
+            
+            usersList.innerHTML = usersHtml;
+        }
+        
+        function addSystemMessage(text) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            
+            const time = new Date().toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            messageDiv.innerHTML = `
+                <div>${text}</div>
+                <div class="message-time">${time}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function updateConnectionStatus(isConnected, message) {
+            const indicator = document.getElementById('connectionIndicator');
+            const status = document.getElementById('chatStatus');
+            
+            indicator.className = `connection-indicator ${isConnected ? 'connected' : 'disconnected'}`;
+            status.textContent = message;
+        }
+        
+        function updateUsername() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (username) {
+                localStorage.setItem('rulettt_username', username);
+                addSystemMessage(`РРјСЏ РёР·РјРµРЅРµРЅРѕ РЅР°: ${username}`);
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // РћР±СЂР°Р±РѕС‚С‡РёРєРё СЃРѕР±С‹С‚РёР№
+        document.getElementById('messageInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
+        document.addEventListener('DOMContentLoaded', function() {
+            // Р—Р°РіСЂСѓР¶Р°РµРј СЃРѕС…СЂР°РЅРµРЅРЅРѕРµ РёРјСЏ
+            const savedUsername = localStorage.getItem('rulettt_username');
+            if (savedUsername) {
+                document.getElementById('usernameInput').value = savedUsername;
+            }
+            
+            // РџРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅР°СЏ Р·Р°РіСЂСѓР·РєР°
+            updateConnectionStatus(false, 'РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє СЃРµСЂРІРµСЂСѓ...');
+            loadChatMessages();
+            loadActiveUsers();
+            
+            // РђРІС‚РѕРѕР±РЅРѕРІР»РµРЅРёРµ
+            setInterval(loadChatMessages, 3000);  // РЎРѕРѕР±С‰РµРЅРёСЏ РєР°Р¶РґС‹Рµ 3 СЃРµРє
+            setInterval(loadActiveUsers, 15000);  // РџРѕР»СЊР·РѕРІР°С‚РµР»Рё РєР°Р¶РґС‹Рµ 15 СЃРµРє
+            
+            console.log('рџ’¬ РћР±С‰РёР№ С‡Р°С‚ RULETTT РіРѕС‚РѕРІ Рє СЂР°Р±РѕС‚Рµ!');
+        });
+    </script>
+</body>
+</html>

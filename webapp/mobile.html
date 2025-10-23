@@ -1,0 +1,962 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RULETTT Mobile">
+    <title>рџЋІ RULETTT Mobile - РњРѕР±РёР»СЊРЅС‹Р№ РљРѕР»Р»РµРєС‚РѕСЂ</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* РњРѕР±РёР»СЊРЅР°СЏ С€Р°РїРєР° */
+        .mobile-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(26, 26, 46, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* РћСЃРЅРѕРІРЅРѕР№ РєРѕРЅС‚РµРЅС‚ */
+        .mobile-container {
+            padding: 80px 15px 20px;
+            max-width: 100%;
+        }
+
+        /* РљР°СЂС‚РѕС‡РєРё СЃС‚Р°С‚РёСЃС‚РёРєРё */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #00ff88;
+        }
+
+        .stat-card p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* РљРѕР»Р»РµРєС‚РѕСЂ РєР°Р·РёРЅРѕ */
+        .casino-collector {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .casino-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .casino-btn {
+            min-width: 80px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            padding: 0 15px;
+        }
+
+        .casino-btn.active {
+            background: #00ff88;
+            color: #1a1a2e;
+            border-color: #00ff88;
+        }
+
+        .collector-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff6b6b;
+        }
+
+        .status-dot.active {
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #1a1a2e;
+        }
+
+        .stop-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* РџРѕСЃР»РµРґРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚С‹ */
+        .recent-results {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .results-header h3 {
+            font-size: 16px;
+        }
+
+        .clear-btn {
+            font-size: 12px;
+            color: #ff6b6b;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .results-list {
+            max-height: 200px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+        }
+
+        .result-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .red { background: #e74c3c; color: white; }
+        .black { background: #2c3e50; color: white; }
+        .green { background: #27ae60; color: white; }
+
+        .result-time {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+
+        /* РќРёР¶РЅСЏСЏ РїР°РЅРµР»СЊ РЅР°РІРёРіР°С†РёРё */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(26, 26, 46, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 8px;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item.active {
+            color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* РњРѕРґР°Р»СЊРЅС‹Рµ РѕРєРЅР° */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* РќР°СЃС‚СЂРѕР№РєРё */
+        .settings-group {
+            margin-bottom: 25px;
+        }
+
+        .settings-group h4 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #00ff88;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-toggle {
+            width: 50px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .setting-toggle.active {
+            background: #00ff88;
+        }
+
+        .toggle-slider {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .setting-toggle.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        /* РђРЅРёРјР°С†РёРё */
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* РЈРІРµРґРѕРјР»РµРЅРёСЏ */
+        .notification {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            right: 15px;
+            background: rgba(0, 255, 136, 0.9);
+            color: #1a1a2e;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            z-index: 1500;
+            transform: translateY(-100px);
+            transition: transform 0.3s ease-out;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        /* РђРґР°РїС‚Р°С†РёСЏ РґР»СЏ iPhone */
+        @supports (padding: max(0px)) {
+            .mobile-header {
+                padding-top: max(15px, env(safe-area-inset-top));
+                height: calc(60px + max(0px, env(safe-area-inset-top)));
+            }
+            
+            .mobile-container {
+                padding-top: calc(80px + max(0px, env(safe-area-inset-top)));
+            }
+            
+            .bottom-nav {
+                padding-bottom: max(0px, env(safe-area-inset-bottom));
+                height: calc(70px + max(0px, env(safe-area-inset-bottom)));
+            }
+        }
+
+        /* РўРµРјРЅР°СЏ С‚РµРјР° */
+        @media (prefers-color-scheme: dark) {
+            .modal-content {
+                background: #0f0f23;
+            }
+        }
+
+        /* Р›Р°РЅРґС€Р°С„С‚РЅР°СЏ РѕСЂРёРµРЅС‚Р°С†РёСЏ */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .mobile-header {
+                height: 50px;
+            }
+            
+            .mobile-container {
+                padding-top: 70px;
+            }
+            
+            .bottom-nav {
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- РњРѕР±РёР»СЊРЅР°СЏ С€Р°РїРєР° -->
+    <header class="mobile-header">
+        <h1>рџЋІ RULETTT Mobile</h1>
+        <div class="header-actions">
+            <button class="header-btn" onclick="showNotification('рџ“Љ РЎС‚Р°С‚РёСЃС‚РёРєР° РѕР±РЅРѕРІР»РµРЅР°!')">рџ“Љ</button>
+            <button class="header-btn" onclick="openModal('settingsModal')">вљ™пёЏ</button>
+        </div>
+    </header>
+
+    <!-- РћСЃРЅРѕРІРЅРѕР№ РєРѕРЅС‚РµРЅС‚ -->
+    <div class="mobile-container">
+        <!-- РЎС‚Р°С‚РёСЃС‚РёРєР° -->
+        <div class="stats-grid fade-in">
+            <div class="stat-card">
+                <h3 id="totalSpins">0</h3>
+                <p>Р’СЃРµРіРѕ СЃРїРёРЅРѕРІ</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="sessionTime">00:00</h3>
+                <p>Р’СЂРµРјСЏ СЃРµСЃСЃРёРё</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="redCount">0</h3>
+                <p>РљСЂР°СЃРЅС‹Рµ</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="blackCount">0</h3>
+                <p>Р§РµСЂРЅС‹Рµ</p>
+            </div>
+        </div>
+
+        <!-- РљРѕР»Р»РµРєС‚РѕСЂ -->
+        <div class="casino-collector fade-in">
+            <div class="casino-selector">
+                <button class="casino-btn active" data-casino="stake">Stake</button>
+                <button class="casino-btn" data-casino="bcgame">BC.Game</button>
+                <button class="casino-btn" data-casino="roobet">Roobet</button>
+                <button class="casino-btn" data-casino="rollbit">Rollbit</button>
+            </div>
+
+            <div class="collector-status">
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">РћСЃС‚Р°РЅРѕРІР»РµРЅ</span>
+                </div>
+                <button class="control-btn start-btn" id="controlBtn" onclick="toggleCollector()">
+                    Р—Р°РїСѓСЃС‚РёС‚СЊ
+                </button>
+            </div>
+        </div>
+
+        <!-- РџРѕСЃР»РµРґРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚С‹ -->
+        <div class="recent-results fade-in">
+            <div class="results-header">
+                <h3>РџРѕСЃР»РµРґРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚С‹</h3>
+                <button class="clear-btn" onclick="clearResults()">РћС‡РёСЃС‚РёС‚СЊ</button>
+            </div>
+            <div class="results-list" id="resultsList">
+                <div class="result-item">
+                    <div class="result-number red">32</div>
+                    <div>
+                        <div>Stake.com</div>
+                        <div class="result-time">С‚РѕР»СЊРєРѕ С‡С‚Рѕ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- РќРёР¶РЅСЏСЏ РЅР°РІРёРіР°С†РёСЏ -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-tab="collector">
+            <div class="nav-icon">рџЋІ</div>
+            <div>РљРѕР»Р»РµРєС‚РѕСЂ</div>
+        </a>
+        <a href="#" class="nav-item" data-tab="analytics">
+            <div class="nav-icon">рџ“€</div>
+            <div>РђРЅР°Р»РёС‚РёРєР°</div>
+        </a>
+        <a href="#" class="nav-item" data-tab="strategies">
+            <div class="nav-icon">рџЋЇ</div>
+            <div>РЎС‚СЂР°С‚РµРіРёРё</div>
+        </a>
+        <a href="#" class="nav-item" data-tab="team">
+            <div class="nav-icon">рџ‘Ґ</div>
+            <div>РљРѕРјР°РЅРґР°</div>
+        </a>
+    </nav>
+
+    <!-- РњРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ РЅР°СЃС‚СЂРѕРµРє -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>вљ™пёЏ РќР°СЃС‚СЂРѕР№РєРё</h3>
+                <button class="modal-close" onclick="closeModal('settingsModal')">Г—</button>
+            </div>
+
+            <div class="settings-group">
+                <h4>РЎР±РѕСЂ РґР°РЅРЅС‹С…</h4>
+                <div class="setting-item">
+                    <span>РђРІС‚РѕСЃРѕС…СЂР°РЅРµРЅРёРµ</span>
+                    <div class="setting-toggle active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>Р—РІСѓРєРѕРІС‹Рµ СѓРІРµРґРѕРјР»РµРЅРёСЏ</span>
+                    <div class="setting-toggle" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>Р’РёР±СЂР°С†РёСЏ</span>
+                    <div class="setting-toggle active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h4>РРЅС‚РµСЂС„РµР№СЃ</h4>
+                <div class="setting-item">
+                    <span>РўРµРјРЅР°СЏ С‚РµРјР°</span>
+                    <div class="setting-toggle active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>РџРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ СЂРµР¶РёРј</span>
+                    <div class="setting-toggle" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h4>РЎРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ</h4>
+                <div class="setting-item">
+                    <span>РћР±Р»Р°С‡РЅРѕРµ С…СЂР°РЅРµРЅРёРµ</span>
+                    <div class="setting-toggle active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>РђРІС‚РѕСЌРєСЃРїРѕСЂС‚</span>
+                    <div class="setting-toggle" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- РЈРІРµРґРѕРјР»РµРЅРёСЏ -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ
+        let isCollecting = false;
+        let sessionStartTime = null;
+        let totalSpins = 0;
+        let redCount = 0;
+        let blackCount = 0;
+        let greenCount = 0;
+        let selectedCasino = 'stake';
+        let sessionTimer = null;
+        let collectorInterval = null;
+
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїСЂРёР»РѕР¶РµРЅРёСЏ
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadStoredData();
+            setupEventListeners();
+            checkPWASupport();
+        });
+
+        function initializeApp() {
+            console.log('рџЋІ RULETTT Mobile РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ...');
+            
+            // РџСЂРѕРІРµСЂСЏРµРј РїРѕРґРґРµСЂР¶РєСѓ Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('вњ… Service Worker Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ'))
+                    .catch(err => console.log('вќЊ Service Worker РѕС€РёР±РєР°:', err));
+            }
+
+            // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј viewport height РґР»СЏ РјРѕР±РёР»СЊРЅС‹С… Р±СЂР°СѓР·РµСЂРѕРІ
+            setViewportHeight();
+            window.addEventListener('resize', setViewportHeight);
+        }
+
+        function setViewportHeight() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+
+        function checkPWASupport() {
+            // РџСЂРѕРІРµСЂСЏРµРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СѓСЃС‚Р°РЅРѕРІРєРё PWA
+            let deferredPrompt;
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                showInstallPrompt();
+            });
+        }
+
+        function showInstallPrompt() {
+            showNotification('рџ“± РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РїСЂРёР»РѕР¶РµРЅРёРµ РЅР° РіР»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ!');
+        }
+
+        function setupEventListeners() {
+            // РќР°РІРёРіР°С†РёСЏ
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchTab(item.dataset.tab);
+                });
+            });
+
+            // Р’С‹Р±РѕСЂ РєР°Р·РёРЅРѕ
+            document.querySelectorAll('.casino-btn').forEach(btn => {
+                btn.addEventListener('click', () => selectCasino(btn.dataset.casino));
+            });
+
+            // РџСЂРµРґРѕС‚РІСЂР°С‰Р°РµРј РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёРµ РїСЂРё РґРІРѕР№РЅРѕРј С‚Р°РїРµ
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+
+        function loadStoredData() {
+            // Р—Р°РіСЂСѓР¶Р°РµРј СЃРѕС…СЂР°РЅРµРЅРЅС‹Рµ РґР°РЅРЅС‹Рµ
+            const savedData = localStorage.getItem('rulettt_mobile_data');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                totalSpins = data.totalSpins || 0;
+                redCount = data.redCount || 0;
+                blackCount = data.blackCount || 0;
+                greenCount = data.greenCount || 0;
+                updateStats();
+            }
+        }
+
+        function saveData() {
+            const data = {
+                totalSpins,
+                redCount,
+                blackCount,
+                greenCount,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('rulettt_mobile_data', JSON.stringify(data));
+        }
+
+        function selectCasino(casino) {
+            selectedCasino = casino;
+            
+            // РћР±РЅРѕРІР»СЏРµРј UI
+            document.querySelectorAll('.casino-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-casino="${casino}"]`).classList.add('active');
+            
+            showNotification(`рџЋ° Р’С‹Р±СЂР°РЅРѕ РєР°Р·РёРЅРѕ: ${casino.toUpperCase()}`);
+        }
+
+        function toggleCollector() {
+            if (isCollecting) {
+                stopCollector();
+            } else {
+                startCollector();
+            }
+        }
+
+        function startCollector() {
+            isCollecting = true;
+            sessionStartTime = Date.now();
+            
+            // РћР±РЅРѕРІР»СЏРµРј UI
+            document.getElementById('statusDot').classList.add('active');
+            document.getElementById('statusText').textContent = `РЎРѕР±РёСЂР°СЋ СЃ ${selectedCasino.toUpperCase()}`;
+            document.getElementById('controlBtn').textContent = 'РћСЃС‚Р°РЅРѕРІРёС‚СЊ';
+            document.getElementById('controlBtn').className = 'control-btn stop-btn';
+            
+            // Р—Р°РїСѓСЃРєР°РµРј С‚Р°Р№РјРµСЂ СЃРµСЃСЃРёРё
+            sessionTimer = setInterval(updateSessionTime, 1000);
+            
+            // Р—Р°РїСѓСЃРєР°РµРј СЃР±РѕСЂ РґР°РЅРЅС‹С…
+            collectorInterval = setInterval(collectData, 30000); // РљР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ
+            
+            // Р’РёР±СЂР°С†РёСЏ РїСЂРё Р·Р°РїСѓСЃРєРµ
+            if (navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+            
+            showNotification('рџљЂ РљРѕР»Р»РµРєС‚РѕСЂ Р·Р°РїСѓС‰РµРЅ!');
+            console.log(`рџЋІ РљРѕР»Р»РµРєС‚РѕСЂ Р·Р°РїСѓС‰РµРЅ РґР»СЏ ${selectedCasino}`);
+        }
+
+        function stopCollector() {
+            isCollecting = false;
+            
+            // РћС‡РёС‰Р°РµРј РёРЅС‚РµСЂРІР°Р»С‹
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+                sessionTimer = null;
+            }
+            
+            if (collectorInterval) {
+                clearInterval(collectorInterval);
+                collectorInterval = null;
+            }
+            
+            // РћР±РЅРѕРІР»СЏРµРј UI
+            document.getElementById('statusDot').classList.remove('active');
+            document.getElementById('statusText').textContent = 'РћСЃС‚Р°РЅРѕРІР»РµРЅ';
+            document.getElementById('controlBtn').textContent = 'Р—Р°РїСѓСЃС‚РёС‚СЊ';
+            document.getElementById('controlBtn').className = 'control-btn start-btn';
+            
+            showNotification('вЏ№пёЏ РљРѕР»Р»РµРєС‚РѕСЂ РѕСЃС‚Р°РЅРѕРІР»РµРЅ');
+            console.log('рџ›‘ РљРѕР»Р»РµРєС‚РѕСЂ РѕСЃС‚Р°РЅРѕРІР»РµРЅ');
+        }
+
+        function collectData() {
+            // РЎРёРјСѓР»СЏС†РёСЏ СЃР±РѕСЂР° РґР°РЅРЅС‹С… (РІ СЂРµР°Р»СЊРЅРѕРј РїСЂРёР»РѕР¶РµРЅРёРё Р·РґРµСЃСЊ Р±СѓРґРµС‚ API Р·Р°РїСЂРѕСЃ)
+            const number = Math.floor(Math.random() * 37); // 0-36
+            let color;
+            
+            if (number === 0) {
+                color = 'green';
+                greenCount++;
+            } else if ([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(number)) {
+                color = 'red';
+                redCount++;
+            } else {
+                color = 'black';
+                blackCount++;
+            }
+            
+            totalSpins++;
+            
+            // Р”РѕР±Р°РІР»СЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚ РІ СЃРїРёСЃРѕРє
+            addResult(selectedCasino, number, color);
+            
+            // РћР±РЅРѕРІР»СЏРµРј СЃС‚Р°С‚РёСЃС‚РёРєСѓ
+            updateStats();
+            
+            // РЎРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ
+            saveData();
+            
+            // Р’РёР±СЂР°С†РёСЏ РїСЂРё РЅРѕРІРѕРј СЂРµР·СѓР»СЊС‚Р°С‚Рµ
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            console.log(`рџЋІ РќРѕРІС‹Р№ СЃРїРёРЅ: ${number} (${color}) СЃ ${selectedCasino}`);
+        }
+
+        function addResult(casino, number, color) {
+            const resultsList = document.getElementById('resultsList');
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item fade-in';
+            
+            resultItem.innerHTML = `
+                <div class="result-number ${color}">${number}</div>
+                <div>
+                    <div>${casino.charAt(0).toUpperCase() + casino.slice(1)}</div>
+                    <div class="result-time">С‚РѕР»СЊРєРѕ С‡С‚Рѕ</div>
+                </div>
+            `;
+            
+            // Р”РѕР±Р°РІР»СЏРµРј РІ РЅР°С‡Р°Р»Рѕ СЃРїРёСЃРєР°
+            resultsList.insertBefore(resultItem, resultsList.firstChild);
+            
+            // РћРіСЂР°РЅРёС‡РёРІР°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
+            const items = resultsList.querySelectorAll('.result-item');
+            if (items.length > 20) {
+                items[items.length - 1].remove();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalSpins').textContent = totalSpins;
+            document.getElementById('redCount').textContent = redCount;
+            document.getElementById('blackCount').textContent = blackCount;
+        }
+
+        function updateSessionTime() {
+            if (!sessionStartTime) return;
+            
+            const elapsed = Date.now() - sessionStartTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            
+            document.getElementById('sessionTime').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function clearResults() {
+            if (confirm('РћС‡РёСЃС‚РёС‚СЊ РІСЃРµ СЂРµР·СѓР»СЊС‚Р°С‚С‹?')) {
+                document.getElementById('resultsList').innerHTML = '';
+                totalSpins = 0;
+                redCount = 0;
+                blackCount = 0;
+                greenCount = 0;
+                updateStats();
+                saveData();
+                showNotification('рџ—‘пёЏ Р РµР·СѓР»СЊС‚Р°С‚С‹ РѕС‡РёС‰РµРЅС‹');
+            }
+        }
+
+        function switchTab(tab) {
+            // РћР±РЅРѕРІР»СЏРµРј Р°РєС‚РёРІРЅСѓСЋ РІРєР»Р°РґРєСѓ
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            
+            // Р—РґРµСЃСЊ РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ Р»РѕРіРёРєСѓ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ РєРѕРЅС‚РµРЅС‚Р°
+            showNotification(`рџ“± Р’РєР»Р°РґРєР°: ${tab}`);
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleSetting(toggle) {
+            toggle.classList.toggle('active');
+            
+            // Р’РёР±СЂР°С†РёСЏ РїСЂРё РїРµСЂРµРєР»СЋС‡РµРЅРёРё
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // РћР±СЂР°Р±РѕС‚РєР° С„РѕРєСѓСЃР°/РїРѕС‚РµСЂРё С„РѕРєСѓСЃР° РїСЂРёР»РѕР¶РµРЅРёСЏ
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                console.log('рџ“± РџСЂРёР»РѕР¶РµРЅРёРµ РІ С„РѕРЅРµ');
+            } else {
+                console.log('рџ“± РџСЂРёР»РѕР¶РµРЅРёРµ Р°РєС‚РёРІРЅРѕ');
+                // РћР±РЅРѕРІР»СЏРµРј РґР°РЅРЅС‹Рµ РїСЂРё РІРѕР·РІСЂР°С‰РµРЅРёРё РІ РїСЂРёР»РѕР¶РµРЅРёРµ
+                if (isCollecting) {
+                    collectData();
+                }
+            }
+        });
+
+        // РћР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РѕРє
+        window.addEventListener('error', function(e) {
+            console.error('вќЊ РћС€РёР±РєР° РїСЂРёР»РѕР¶РµРЅРёСЏ:', e.error);
+            showNotification('вќЊ РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°, РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚Рµ РїСЂРёР»РѕР¶РµРЅРёРµ');
+        });
+
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїСЂРё Р·Р°РіСЂСѓР·РєРµ
+        console.log('рџЋІ RULETTT Mobile РіРѕС‚РѕРІ Рє СЂР°Р±РѕС‚Рµ!');
+    </script>
+</body>
+</html>
+

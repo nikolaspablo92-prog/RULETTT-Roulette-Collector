@@ -1,0 +1,11 @@
+version: "2" 
+authtoken: YOUR_NGROK_TOKEN 
+tunnels: 
+  api: 
+    addr: 5000 
+    proto: http 
+    bind-tls: true 
+  web: 
+    addr: 8080 
+    proto: http 
+    bind-tls: true 

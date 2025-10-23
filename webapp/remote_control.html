@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>рџЋ›пёЏ RULETTT Remote Control</title>
+    <style>
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        .status-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .control-button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            padding: 15px 25px;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        .danger { background: linear-gradient(45deg, #f44336, #d32f2f); }
+        .info { background: linear-gradient(45deg, #2196f3, #1976d2); }
+        .warning { background: linear-gradient(45deg, #ff9800, #f57c00); }
+        
+        .system-info {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>рџЋ›пёЏ RULETTT Remote Control Panel</h1>
+        <p>РџР°РЅРµР»СЊ СѓРґР°Р»РµРЅРЅРѕРіРѕ СѓРїСЂР°РІР»РµРЅРёСЏ СЃРёСЃС‚РµРјРѕР№ RULETTT</p>
+        
+        <div class="status-card">
+            <h3>рџ“Љ РЎС‚Р°С‚СѓСЃ СЃРёСЃС‚РµРјС‹</h3>
+            <div id="systemStatus">
+                <div>рџ”Ґ API Server: <span id="apiStatus">РџСЂРѕРІРµСЂСЏРµРј...</span></div>
+                <div>рџЊђ Web Server: <span id="webStatus">РџСЂРѕРІРµСЂСЏРµРј...</span></div>
+                <div>рџ¤– AI Assistant: <span id="aiStatus">РџСЂРѕРІРµСЂСЏРµРј...</span></div>
+            </div>
+        </div>
+        
+        <div class="system-info">
+            <strong>рџ–ҐпёЏ РЎРёСЃС‚РµРјР°:</strong> Windows 11<br>
+            <strong>рџђЌ Python:</strong> 3.13.7<br>
+            <strong>рџ“Ќ IP:</strong> 192.168.88.216<br>
+            <strong>вЏ° Р—Р°РїСѓС‰РµРЅРѕ:</strong> <span id="uptime"></span>
+        </div>
+        
+        <div class="control-grid">
+            <a href="ai_chat_test.html" class="control-button info">
+                рџ§Є РўРµСЃС‚ AI СЃРёСЃС‚РµРјС‹
+            </a>
+            <a href="global_chat.html" class="control-button">
+                рџ’¬ РљРѕРјР°РЅРґРЅС‹Р№ С‡Р°С‚
+            </a>
+            <a href="dashboard.html" class="control-button warning">
+                рџ“Љ РџР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ
+            </a>
+            <button onclick="checkSystem()" class="control-button info">
+                рџ”„ РћР±РЅРѕРІРёС‚СЊ СЃС‚Р°С‚СѓСЃ
+            </button>
+            <button onclick="restartServices()" class="control-button warning">
+                рџ”„ РџРµСЂРµР·Р°РїСѓСЃРє СЃРµСЂРІРёСЃРѕРІ
+            </button>
+            <button onclick="showLogs()" class="control-button">
+                рџ“‹ РџРѕРєР°Р·Р°С‚СЊ Р»РѕРіРё
+            </button>
+        </div>
+        
+        <div class="status-card">
+            <h3>рџЊђ РЈРґР°Р»РµРЅРЅС‹Р№ РґРѕСЃС‚СѓРї</h3>
+            <p><strong>Р”Р»СЏ macOS РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№:</strong></p>
+            <ul>
+                <li>РћС‚РєСЂРѕР№С‚Рµ Р±СЂР°СѓР·РµСЂ Safari/Chrome</li>
+                <li>РџРµСЂРµР№РґРёС‚Рµ РїРѕ Р°РґСЂРµСЃСѓ: <code>http://192.168.88.216:8080</code></li>
+                <li>Р’СЃРµ С„СѓРЅРєС†РёРё РґРѕСЃС‚СѓРїРЅС‹ С‡РµСЂРµР· РІРµР±-РёРЅС‚РµСЂС„РµР№СЃ</li>
+                <li>Р”Р»СЏ SSH РґРѕСЃС‚СѓРїР°: <code>ssh user@192.168.88.216</code></li>
+            </ul>
+        </div>
+        
+        <div id="logs" class="system-info" class="log-container">
+            <strong>рџ“‹ РЎРёСЃС‚РµРјРЅС‹Рµ Р»РѕРіРё:</strong><br>
+            <div id="logContent">Р›РѕРіРё Р·Р°РіСЂСѓР¶Р°СЋС‚СЃСЏ...</div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://192.168.88.216:5000';
+        let startTime = new Date();
+        
+        async function checkSystem() {
+            // РџСЂРѕРІРµСЂСЏРµРј API
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                document.getElementById('apiStatus').innerHTML = response.ok ? 
+                    '<span class="status-success">вњ… Р Р°Р±РѕС‚Р°РµС‚</span>' : 
+                    '<span class="status-error">вќЊ РћС€РёР±РєР°</span>';
+            } catch (e) {
+                document.getElementById('apiStatus').innerHTML = '<span class="status-error">вќЊ РќРµРґРѕСЃС‚СѓРїРµРЅ</span>';
+            }
+            
+            // РџСЂРѕРІРµСЂСЏРµРј AI
+            try {
+                const response = await fetch(`${API_BASE}/api/chat/ai`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({'message': 'С‚РµСЃС‚', 'session_id': 'health_check'})
+                });
+                document.getElementById('aiStatus').innerHTML = response.ok ? 
+                    '<span class="status-success">вњ… Р Р°Р±РѕС‚Р°РµС‚</span>' : 
+                    '<span class="status-error">вќЊ РћС€РёР±РєР°</span>';
+            } catch (e) {
+                document.getElementById('aiStatus').innerHTML = '<span class="status-error">вќЊ РќРµРґРѕСЃС‚СѓРїРµРЅ</span>';
+            }
+            
+            document.getElementById('webStatus').innerHTML = '<span class="status-success">вњ… Р Р°Р±РѕС‚Р°РµС‚</span>';
+        }
+        
+        function updateUptime() {
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+            const hours = Math.floor(diff / 3600);
+            const minutes = Math.floor((diff % 3600) / 60);
+            const seconds = diff % 60;
+            document.getElementById('uptime').textContent = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        }
+        
+        function restartServices() {
+            if (confirm('РџРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ СЃРµСЂРІРёСЃС‹ RULETTT?')) {
+                alert('вљ пёЏ Р¤СѓРЅРєС†РёСЏ РїРµСЂРµР·Р°РїСѓСЃРєР° Р±СѓРґРµС‚ РґРѕР±Р°РІР»РµРЅР° РІ СЃР»РµРґСѓСЋС‰РµР№ РІРµСЂСЃРёРё');
+            }
+        }
+        
+        function showLogs() {
+            const logsDiv = document.getElementById('logs');
+            logsDiv.style.display = logsDiv.style.display === 'none' ? 'block' : 'none';
+            if (logsDiv.style.display === 'block') {
+                document.getElementById('logContent').innerHTML = 
+                    'РЎРёСЃС‚РµРјР° Р·Р°РїСѓС‰РµРЅР°: ' + startTime.toLocaleString() + '<br>' +
+                    'РЎС‚Р°С‚СѓСЃ: Р’СЃРµ СЃРµСЂРІРёСЃС‹ Р°РєС‚РёРІРЅС‹<br>' +
+                    'РџРѕСЃР»РµРґРЅСЏСЏ РїСЂРѕРІРµСЂРєР°: ' + new Date().toLocaleTimeString();
+            }
+        }
+        
+        // РђРІС‚РѕРѕР±РЅРѕРІР»РµРЅРёРµ
+        setInterval(checkSystem, 10000);
+        setInterval(updateUptime, 1000);
+        
+        // РќР°С‡Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР°
+        checkSystem();
+        updateUptime();
+    </script>
+</body>
+</html>
+
+

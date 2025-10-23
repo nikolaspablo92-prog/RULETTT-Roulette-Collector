@@ -1,0 +1,27 @@
+# ============================================
+# 🖥️ RULETTT Desktop Application Requirements
+# ============================================
+
+# Core dependencies (уже есть в проекте)
+flask>=3.0.0
+flask-cors>=4.0.0
+requests>=2.31.0
+
+# Desktop GUI Framework
+PyQt5>=5.15.10
+PyQt5-Qt5>=5.15.2
+PyQtWebEngine>=5.15.6
+
+# System integration
+pywin32>=306; sys_platform == 'win32'  # Windows API
+pystray>=0.19.5  # System tray icon
+Pillow>=10.1.0  # Image processing для иконок
+
+# Packaging
+PyInstaller>=6.3.0  # Создание .exe
+
+# Optional: Better notifications
+win10toast>=0.9; sys_platform == 'win32'
+
+# Optional: Auto-update
+requests>=2.31.0

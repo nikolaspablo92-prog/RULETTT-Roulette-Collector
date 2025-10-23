@@ -1,0 +1,434 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>рџЋІ RULETTT - Р“Р»Р°РІРЅР°СЏ СЃС‚СЂР°РЅРёС†Р°</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            animation: slideDown 0.8s ease;
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .status-bar {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            animation: slideUp 0.8s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .status-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .status-item:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-label {
+            opacity: 0.7;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .status-value {
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 35px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .card:hover .card-icon {
+            animation: spin 0.6s ease;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        .card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .card p {
+            opacity: 0.85;
+            line-height: 1.8;
+            font-size: 1.05em;
+            flex-grow: 1;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .badge-success { 
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
+        }
+        
+        .badge-primary { 
+            background: linear-gradient(45deg, #2196f3, #1976d2);
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
+        }
+        
+        .badge-warning { 
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+        }
+        
+        .badge-danger { 
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0.8;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .footer p {
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>рџЋІ RULETTT</h1>
+            <p>РџСЂРѕС„РµСЃСЃРёРѕРЅР°Р»СЊРЅР°СЏ СЃРёСЃС‚РµРјР° СЃР±РѕСЂР° Рё Р°РЅР°Р»РёР·Р° РґР°РЅРЅС‹С… СЂСѓР»РµС‚РєРё</p>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-label">API РЎРµСЂРІРµСЂ</div>
+                <div class="status-value pulse" id="apiStatus">вЏі</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Р’РµР± РЎРµСЂРІРµСЂ</div>
+                <div class="status-value">вњ…</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">AI РђСЃСЃРёСЃС‚РµРЅС‚</div>
+                <div class="status-value pulse" id="aiStatus">вЏі</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Р’СЂРµРјСЏ СЂР°Р±РѕС‚С‹</div>
+                <div class="status-value" id="uptime">00:00</div>
+            </div>
+        </div>
+        
+        <div class="grid">
+            <a href="test_simple.html" class="card">
+                <div class="card-icon">рџ§Є</div>
+                <h3>РџСЂРѕСЃС‚РѕР№ С‚РµСЃС‚</h3>
+                <p>Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРІРµСЂРєР° СЂР°Р±РѕС‚РѕСЃРїРѕСЃРѕР±РЅРѕСЃС‚Рё СЃРёСЃС‚РµРјС‹. РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ С‚РµСЃС‚РёСЂРѕРІР°РЅРёРµ API Рё JavaScript С„СѓРЅРєС†РёР№.</p>
+                <span class="badge badge-success">в… Р РµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ</span>
+            </a>
+            
+            <a href="debug_panel.html" class="card">
+                <div class="card-icon">рџ©є</div>
+                <h3>Р”РёР°РіРЅРѕСЃС‚РёРєР°</h3>
+                <p>РџРѕР»РЅР°СЏ РґРёР°РіРЅРѕСЃС‚РёРєР°: РїСЂРѕРІРµСЂРєР° API, CORS РЅР°СЃС‚СЂРѕРµРє, СЃРµС‚РµРІС‹С… РїРѕРґРєР»СЋС‡РµРЅРёР№ Рё РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚Рё СЃРёСЃС‚РµРјС‹.</p>
+                <span class="badge badge-primary">Р”Р»СЏ СЂР°Р·СЂР°Р±РѕС‚С‡РёРєРѕРІ</span>
+            </a>
+            
+            <a href="control_panel.html" class="card">
+                <div class="card-icon">рџЋ›пёЏ</div>
+                <h3>РџР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ</h3>
+                <p>Р¦РµРЅС‚СЂР°Р»РёР·РѕРІР°РЅРЅРѕРµ СѓРїСЂР°РІР»РµРЅРёРµ СЃРёСЃС‚РµРјРѕР№, РјРѕРЅРёС‚РѕСЂРёРЅРі СЃС‚Р°С‚СѓСЃР° Рё Р±С‹СЃС‚СЂС‹Р№ РґРѕСЃС‚СѓРї РєРѕ РІСЃРµРј С„СѓРЅРєС†РёСЏРј.</p>
+                <span class="badge badge-warning">РђРґРјРёРЅРёСЃС‚СЂРёСЂРѕРІР°РЅРёРµ</span>
+            </a>
+            
+            <a href="ai_chat_test.html" class="card">
+                <div class="card-icon">рџ¤–</div>
+                <h3>AI Р§Р°С‚</h3>
+                <p>РРЅС‚РµСЂР°РєС‚РёРІРЅРѕРµ РѕР±С‰РµРЅРёРµ СЃ AI-Р°СЃСЃРёСЃС‚РµРЅС‚РѕРј РґР»СЏ Р°РЅР°Р»РёР·Р° РґР°РЅРЅС‹С…, РїРѕР»СѓС‡РµРЅРёСЏ СЂРµРєРѕРјРµРЅРґР°С†РёР№ Рё СЃС‚СЂР°С‚РµРіРёР№.</p>
+                <span class="badge badge-primary">AI-Powered</span>
+            </a>
+            
+            <a href="global_chat.html" class="card">
+                <div class="card-icon">рџ’¬</div>
+                <h3>РљРѕРјР°РЅРґРЅС‹Р№ С‡Р°С‚</h3>
+                <p>РћР±С‰РµРЅРёРµ СЃ РєРѕРјР°РЅРґРѕР№ РІ СЂРµР°Р»СЊРЅРѕРј РІСЂРµРјРµРЅРё. РџРѕРґРґРµСЂР¶РєР° @ai РєРѕРјР°РЅРґ РґР»СЏ Р±С‹СЃС‚СЂРѕРіРѕ РІС‹Р·РѕРІР° Р°СЃСЃРёСЃС‚РµРЅС‚Р°.</p>
+                <span class="badge badge-success">РЎРѕРІРјРµСЃС‚РЅР°СЏ СЂР°Р±РѕС‚Р°</span>
+            </a>
+            
+            <a href="dashboard.html" class="card">
+                <div class="card-icon">рџ“Љ</div>
+                <h3>Р”Р°С€Р±РѕСЂРґ</h3>
+                <p>Р’РёР·СѓР°Р»РёР·Р°С†РёСЏ РґР°РЅРЅС‹С… СЂСѓР»РµС‚РєРё, СЃС‚Р°С‚РёСЃС‚РёРєР° СЃРїРёРЅРѕРІ, Р°РЅР°Р»РёР· РїР°С‚С‚РµСЂРЅРѕРІ Рё РІС‹СЏРІР»РµРЅРёРµ С‚СЂРµРЅРґРѕРІ.</p>
+                <span class="badge badge-primary">РђРЅР°Р»РёС‚РёРєР°</span>
+            </a>
+            
+            <a href="advanced_analytics.html" class="card">
+                <div class="card-icon">рџ“€</div>
+                <h3>РџСЂРѕРґРІРёРЅСѓС‚Р°СЏ Р°РЅР°Р»РёС‚РёРєР°</h3>
+                <p>Р“Р»СѓР±РѕРєРёР№ Р°РЅР°Р»РёР· СЃ РіСЂР°С„РёРєР°РјРё, РїСЂРѕРіРЅРѕР·РёСЂРѕРІР°РЅРёРµРј Рё СЃС‚Р°С‚РёСЃС‚РёС‡РµСЃРєРёРјРё РјРѕРґРµР»СЏРјРё РЅР° РѕСЃРЅРѕРІРµ ML.</p>
+                <span class="badge badge-danger">Р­РєСЃРїРµСЂС‚РЅС‹Р№ СЂРµР¶РёРј</span>
+            </a>
+            
+            <a href="mobile.html" class="card">
+                <div class="card-icon">рџ“±</div>
+                <h3>РњРѕР±РёР»СЊРЅР°СЏ РІРµСЂСЃРёСЏ</h3>
+                <p>РћРїС‚РёРјРёР·РёСЂРѕРІР°РЅРЅС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ РґР»СЏ СЃРјР°СЂС‚С„РѕРЅРѕРІ Рё РїР»Р°РЅС€РµС‚РѕРІ СЃ РїРѕРґРґРµСЂР¶РєРѕР№ touch-Р¶РµСЃС‚РѕРІ.</p>
+                <span class="badge badge-success">Touch-Friendly</span>
+            </a>
+            
+            <a href="public_access_ready.html" class="card">
+                <div class="card-icon">рџЊЌ</div>
+                <h3>РџСѓР±Р»РёС‡РЅС‹Р№ РґРѕСЃС‚СѓРї</h3>
+                <p>РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РІРЅРµС€РЅРёС… СЃСЃС‹Р»РєР°С…, РёРЅСЃС‚СЂСѓРєС†РёРё РґР»СЏ СѓРґР°Р»РµРЅРЅРѕРіРѕ РґРѕСЃС‚СѓРїР° С‡РµСЂРµР· ngrok/localtunnel.</p>
+                <span class="badge badge-warning">Р’РЅРµС€РЅРёР№ РґРѕСЃС‚СѓРї</span>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p class="fs-12">рџЋІ <strong>RULETTT v2.0</strong> | РЎРѕР·РґР°РЅРѕ СЃ вќ¤пёЏ РґР»СЏ РїСЂРѕС„РµСЃСЃРёРѕРЅР°Р»СЊРЅРѕРіРѕ Р°РЅР°Р»РёР·Р°</p>
+            <p class="mt-15 opacity-07">
+                рџ–ҐпёЏ Windows 11 | рџђЌ Python 3.13.7 | рџЊђ Node.js 22.20.0
+            </p>
+            <p class="mt-10-opacity-06-fs-09">
+                В© 2025 RULETTT Project | All Rights Reserved
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let startTime = Date.now();
+        
+        // РћР±РЅРѕРІР»РµРЅРёРµ РІСЂРµРјРµРЅРё СЂР°Р±РѕС‚С‹
+        function updateUptime() {
+            const elapsed = Date.now() - startTime;
+            const hours = Math.floor(elapsed / 3600000);
+            const minutes = Math.floor((elapsed % 3600000) / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            
+            const display = hours > 0 
+                ? `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                : `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+            document.getElementById('uptime').textContent = display;
+        }
+        
+        // РџСЂРѕРІРµСЂРєР° API
+        async function checkAPI() {
+            const apiStatusEl = document.getElementById('apiStatus');
+            try {
+                const response = await fetch(`http://${window.location.hostname}:5000/api/health`, {
+                    timeout: 5000
+                });
+                
+                if (response.ok) {
+                    apiStatusEl.textContent = 'вњ…';
+                    apiStatusEl.classList.remove('pulse');
+                } else {
+                    apiStatusEl.textContent = 'вљ пёЏ';
+                }
+            } catch (error) {
+                apiStatusEl.textContent = 'вќЊ';
+                apiStatusEl.classList.remove('pulse');
+            }
+        }
+        
+        // РџСЂРѕРІРµСЂРєР° AI
+        async function checkAI() {
+            const aiStatusEl = document.getElementById('aiStatus');
+            try {
+                const response = await fetch(`http://${window.location.hostname}:5000/api/chat/ai`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: 'ping', session_id: 'index_health'})
+                });
+                
+                if (response.ok) {
+                    aiStatusEl.textContent = 'вњ…';
+                    aiStatusEl.classList.remove('pulse');
+                } else {
+                    aiStatusEl.textContent = 'вљ пёЏ';
+                }
+            } catch (error) {
+                aiStatusEl.textContent = 'вќЊ';
+                aiStatusEl.classList.remove('pulse');
+            }
+        }
+        
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
+        setInterval(updateUptime, 1000);
+        updateUptime();
+        
+        // РџРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅР°СЏ РїСЂРѕРІРµСЂРєР° С‡РµСЂРµР· 1 СЃРµРєСѓРЅРґСѓ
+        setTimeout(() => {
+            checkAPI();
+            checkAI();
+        }, 1000);
+        
+        // РџРµСЂРёРѕРґРёС‡РµСЃРєР°СЏ РїСЂРѕРІРµСЂРєР° РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ
+        setInterval(() => {
+            checkAPI();
+            checkAI();
+        }, 30000);
+        
+        console.log('рџЋІ RULETTT Main Page v2.0');
+        console.log('рџ“Ќ Host:', window.location.hostname);
+        console.log('рџљЂ System ready!');
+    </script>
+</body>
+</html>
+
+

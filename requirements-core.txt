@@ -1,0 +1,16 @@
+# RULETTT - Core Dependencies (REQUIRED)
+# Install: pip install -r requirements-core.txt
+
+# Web server and API
+flask==3.0.0
+flask-cors==4.0.0
+
+# Configuration
+python-dotenv==1.0.0
+
+# Authentication
+pyjwt==2.8.0
+bcrypt==4.0.1
+
+# Task scheduler
+apscheduler==3.10.4

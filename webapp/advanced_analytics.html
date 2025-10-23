@@ -1,0 +1,1000 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>`n    <link rel="stylesheet" href="extracted-styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>рџЋІ RULETTT - Р Р°СЃС€РёСЂРµРЅРЅР°СЏ РђРЅР°Р»РёС‚РёРєР°</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding-top: 70px;
+            overflow-x: hidden;
+        }
+
+        /* РќР°РІРёРіР°С†РёРѕРЅРЅР°СЏ РїР°РЅРµР»СЊ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(26, 26, 46, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .time-filter {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-filter:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            border: none;
+            border-radius: 8px;
+            color: #1a1a2e;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        /* РљРѕРЅС‚РµР№РЅРµСЂ Р°РЅР°Р»РёС‚РёРєРё */
+        .analytics-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* РљР°СЂС‚РѕС‡РєРё KPI */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+        }
+
+        .kpi-title {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #00ff88;
+        }
+
+        .kpi-change {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .kpi-change.positive {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .kpi-change.negative {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        /* РЎРµРєС†РёСЏ РіСЂР°С„РёРєРѕРІ */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 300px;
+        }
+
+        /* РђРЅР°Р»РёР· РїР°С‚С‚РµСЂРЅРѕРІ */
+        .pattern-analysis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .pattern-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .pattern-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #00ff88;
+        }
+
+        .pattern-list {
+            list-style: none;
+        }
+
+        .pattern-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pattern-item:last-child {
+            border-bottom: none;
+        }
+
+        .pattern-probability {
+            font-weight: 600;
+            color: #00ff88;
+        }
+
+        /* РўРµРїР»РѕРІР°СЏ РєР°СЂС‚Р° */
+        .heatmap-section {
+            margin-bottom: 30px;
+        }
+
+        .heatmap-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        /* Р”РµС‚Р°Р»СЊРЅР°СЏ СЃС‚Р°С‚РёСЃС‚РёРєР° */
+        .detailed-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .stats-table {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .stats-table h3 {
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            font-weight: 600;
+            color: #00ff88;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* РђРґР°РїС‚РёРІРЅРѕСЃС‚СЊ */
+        @media (max-width: 1200px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .pattern-analysis {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .analytics-container {
+                padding: 20px;
+            }
+            
+            .navbar {
+                padding: 0 20px;
+            }
+            
+            .navbar h1 {
+                font-size: 20px;
+            }
+            
+            .nav-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+            
+            .detailed-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Р—Р°РіСЂСѓР·РєР° */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            font-size: 18px;
+            opacity: 0.6;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* РђРЅРёРјР°С†РёРё */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- РќР°РІРёРіР°С†РёРѕРЅРЅР°СЏ РїР°РЅРµР»СЊ -->
+    <nav class="navbar">
+        <h1>рџ“Љ Р Р°СЃС€РёСЂРµРЅРЅР°СЏ РђРЅР°Р»РёС‚РёРєР° RULETTT</h1>
+        <div class="nav-controls">
+            <select class="time-filter" id="timeFilter" onchange="updateAnalytics()">
+                <option value="1h">РџРѕСЃР»РµРґРЅРёР№ С‡Р°СЃ</option>
+                <option value="24h" selected>РџРѕСЃР»РµРґРЅРёРµ 24 С‡Р°СЃР°</option>
+                <option value="7d">РџРѕСЃР»РµРґРЅРёРµ 7 РґРЅРµР№</option>
+                <option value="30d">РџРѕСЃР»РµРґРЅРёРµ 30 РґРЅРµР№</option>
+                <option value="all">Р’СЃРµ РІСЂРµРјСЏ</option>
+            </select>
+            <button class="export-btn" onclick="exportAnalytics()">рџ“¤ Р­РєСЃРїРѕСЂС‚</button>
+        </div>
+    </nav>
+
+    <div class="analytics-container">
+        <!-- KPI РљР°СЂС‚РѕС‡РєРё -->
+        <div class="kpi-grid fade-in">
+            <div class="kpi-card">
+                <div class="kpi-title">Р’СЃРµРіРѕ СЃРїРёРЅРѕРІ</div>
+                <div class="kpi-value" id="totalSpinsKPI">0</div>
+                <div class="kpi-change positive" id="spinsChange">+0%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">РђРєС‚РёРІРЅС‹С… РєР°Р·РёРЅРѕ</div>
+                <div class="kpi-value" id="activeCasinosKPI">0</div>
+                <div class="kpi-change positive" id="casinosChange">+0%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">РўРѕС‡РЅРѕСЃС‚СЊ РїСЂРѕРіРЅРѕР·РѕРІ</div>
+                <div class="kpi-value" id="accuracyKPI">0%</div>
+                <div class="kpi-change positive" id="accuracyChange">+0%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Р­С„С„РµРєС‚. СЃС‚СЂР°С‚РµРіРёР№</div>
+                <div class="kpi-value" id="strategiesKPI">0</div>
+                <div class="kpi-change positive" id="strategiesChange">+0%</div>
+            </div>
+        </div>
+
+        <!-- РћСЃРЅРѕРІРЅС‹Рµ РіСЂР°С„РёРєРё -->
+        <div class="charts-section fade-in">
+            <div class="chart-container">
+                <div class="chart-title">
+                    рџ“€ Р”РёРЅР°РјРёРєР° СЃРїРёРЅРѕРІ РїРѕ РІСЂРµРјРµРЅРё
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="timeSeriesChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">
+                    рџЋЇ Р Р°СЃРїСЂРµРґРµР»РµРЅРёРµ РїРѕ С†РІРµС‚Р°Рј
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="colorDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- РђРЅР°Р»РёР· РїР°С‚С‚РµСЂРЅРѕРІ -->
+        <div class="pattern-analysis fade-in">
+            <div class="pattern-card">
+                <div class="pattern-title">рџ”Ќ Р“РѕСЂСЏС‡РёРµ С‡РёСЃР»Р°</div>
+                <ul class="pattern-list" id="hotNumbers">
+                    <li class="pattern-item">
+                        <span>7</span>
+                        <span class="pattern-probability">8.4%</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="pattern-card">
+                <div class="pattern-title">вќ„пёЏ РҐРѕР»РѕРґРЅС‹Рµ С‡РёСЃР»Р°</div>
+                <ul class="pattern-list" id="coldNumbers">
+                    <li class="pattern-item">
+                        <span>13</span>
+                        <span class="pattern-probability">1.2%</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- РўРµРїР»РѕРІР°СЏ РєР°СЂС‚Р° -->
+        <div class="heatmap-section fade-in">
+            <div class="heatmap-container">
+                <div class="chart-title">
+                    рџЊЎпёЏ РўРµРїР»РѕРІР°СЏ РєР°СЂС‚Р° С‡Р°СЃС‚РѕС‚С‹ С‡РёСЃРµР» (0-36)
+                </div>
+                <div class="heatmap-grid" id="heatmapGrid">
+                    <!-- Р‘СѓРґРµС‚ Р·Р°РїРѕР»РЅРµРЅРѕ JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Р”РµС‚Р°Р»СЊРЅР°СЏ СЃС‚Р°С‚РёСЃС‚РёРєР° -->
+        <div class="detailed-stats fade-in">
+            <div class="stats-table">
+                <h3>рџ“Љ РЎС‚Р°С‚РёСЃС‚РёРєР° РїРѕ РєР°Р·РёРЅРѕ</h3>
+                <div class="table-container">
+                    <table id="casinoStatsTable">
+                        <thead>
+                            <tr>
+                                <th>РљР°Р·РёРЅРѕ</th>
+                                <th>РЎРїРёРЅС‹</th>
+                                <th>РљСЂР°СЃРЅС‹Рµ</th>
+                                <th>Р§РµСЂРЅС‹Рµ</th>
+                                <th>Р—РµР»РµРЅС‹Рµ</th>
+                                <th>РџРѕСЃР»РµРґРЅРёР№</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Р‘СѓРґРµС‚ Р·Р°РїРѕР»РЅРµРЅРѕ JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="stats-table">
+                <h3>рџЋЇ РђРЅР°Р»РёР· СЃС‚СЂР°С‚РµРіРёР№</h3>
+                <div class="table-container">
+                    <table id="strategyStatsTable">
+                        <thead>
+                            <tr>
+                                <th>РЎС‚СЂР°С‚РµРіРёСЏ</th>
+                                <th>РЎРµСЃСЃРёРё</th>
+                                <th>РџСЂРёР±С‹Р»СЊ</th>
+                                <th>Win Rate</th>
+                                <th>ROI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Р‘СѓРґРµС‚ Р·Р°РїРѕР»РЅРµРЅРѕ JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РіСЂР°С„РёРєРѕРІ
+        let timeSeriesChart = null;
+        let colorDistributionChart = null;
+        
+        // Р”Р°РЅРЅС‹Рµ РґР»СЏ Р°РЅР°Р»РёС‚РёРєРё
+        let analyticsData = {
+            spins: [],
+            strategies: [],
+            casinos: {},
+            timeRange: '24h'
+        };
+
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїСЂРё Р·Р°РіСЂСѓР·РєРµ СЃС‚СЂР°РЅРёС†С‹
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAnalytics();
+            loadAnalyticsData();
+            createCharts();
+            startRealTimeUpdates();
+        });
+
+        function initializeAnalytics() {
+            console.log('рџ“Љ РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЂР°СЃС€РёСЂРµРЅРЅРѕР№ Р°РЅР°Р»РёС‚РёРєРё...');
+            
+            // Р“РµРЅРµСЂРёСЂСѓРµРј С‚РµРїР»РѕРІСѓСЋ РєР°СЂС‚Сѓ
+            generateHeatmap();
+            
+            // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕР±СЂР°Р±РѕС‚С‡РёРєРё СЃРѕР±С‹С‚РёР№
+            setupEventListeners();
+        }
+
+        function generateHeatmap() {
+            const heatmapGrid = document.getElementById('heatmapGrid');
+            heatmapGrid.innerHTML = '';
+            
+            // РЎРѕР·РґР°РµРј СЏС‡РµР№РєРё РґР»СЏ С‡РёСЃРµР» 0-36
+            for (let i = 0; i <= 36; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'heatmap-cell';
+                cell.textContent = i;
+                cell.dataset.number = i;
+                cell.style.backgroundColor = getHeatmapColor(i);
+                
+                // Р”РѕР±Р°РІР»СЏРµРј РѕР±СЂР°Р±РѕС‚С‡РёРє РєР»РёРєР°
+                cell.addEventListener('click', () => showNumberDetails(i));
+                
+                heatmapGrid.appendChild(cell);
+            }
+        }
+
+        function getHeatmapColor(number) {
+            // РЎРёРјСѓР»СЏС†РёСЏ РґР°РЅРЅС‹С… С‡Р°СЃС‚РѕС‚С‹ (РІ СЂРµР°Р»СЊРЅРѕРј РїСЂРёР»РѕР¶РµРЅРёРё РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С…)
+            const frequency = Math.random() * 100;
+            const intensity = frequency / 100;
+            
+            if (frequency < 20) {
+                return `rgba(59, 130, 246, ${0.3 + intensity * 0.7})`; // РЎРёРЅРёР№ РґР»СЏ С…РѕР»РѕРґРЅС‹С…
+            } else if (frequency > 80) {
+                return `rgba(239, 68, 68, ${0.3 + intensity * 0.7})`; // РљСЂР°СЃРЅС‹Р№ РґР»СЏ РіРѕСЂСЏС‡РёС…
+            } else {
+                return `rgba(34, 197, 94, ${0.3 + intensity * 0.7})`; // Р—РµР»РµРЅС‹Р№ РґР»СЏ РЅРѕСЂРјР°Р»СЊРЅС‹С…
+            }
+        }
+
+        function showNumberDetails(number) {
+            const details = getNumberAnalysis(number);
+            alert(`Р§РёСЃР»Рѕ ${number}:\n${details}`);
+        }
+
+        function getNumberAnalysis(number) {
+            // Р“РµРЅРµСЂРёСЂСѓРµРј Р°РЅР°Р»РёР· С‡РёСЃР»Р°
+            const frequency = Math.floor(Math.random() * 50) + 10;
+            const lastSeen = Math.floor(Math.random() * 120) + 1;
+            const trend = Math.random() > 0.5 ? 'СЂР°СЃС‚РµС‚' : 'РїР°РґР°РµС‚';
+            
+            return `Р§Р°СЃС‚РѕС‚Р°: ${frequency} СЂР°Р·\nРџРѕСЃР»РµРґРЅРёР№ СЂР°Р·: ${lastSeen} РјРёРЅ РЅР°Р·Р°Рґ\nРўСЂРµРЅРґ: ${trend}`;
+        }
+
+        function loadAnalyticsData() {
+            // РЎРёРјСѓР»СЏС†РёСЏ Р·Р°РіСЂСѓР·РєРё РґР°РЅРЅС‹С…
+            generateMockData();
+            updateKPIs();
+            updatePatterns();
+            updateTables();
+        }
+
+        function generateMockData() {
+            // Р“РµРЅРµСЂРёСЂСѓРµРј mock РґР°РЅРЅС‹Рµ РґР»СЏ РґРµРјРѕРЅСЃС‚СЂР°С†РёРё
+            const now = new Date();
+            
+            // Р“РµРЅРµСЂРёСЂСѓРµРј СЃРїРёРЅС‹ Р·Р° РїРѕСЃР»РµРґРЅРёРµ 24 С‡Р°СЃР°
+            for (let i = 0; i < 500; i++) {
+                const timestamp = new Date(now.getTime() - Math.random() * 24 * 60 * 60 * 1000);
+                const number = Math.floor(Math.random() * 37);
+                const casino = ['Stake', 'BC.Game', 'Roobet', 'Rollbit'][Math.floor(Math.random() * 4)];
+                
+                let color;
+                if (number === 0) {
+                    color = 'green';
+                } else if ([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(number)) {
+                    color = 'red';
+                } else {
+                    color = 'black';
+                }
+                
+                analyticsData.spins.push({
+                    timestamp,
+                    number,
+                    color,
+                    casino
+                });
+            }
+            
+            // Р“РµРЅРµСЂРёСЂСѓРµРј РґР°РЅРЅС‹Рµ СЃС‚СЂР°С‚РµРіРёР№
+            const strategies = ['РњР°СЂС‚РёРЅРіРµР№Р»', 'Р¤РёР±РѕРЅР°С‡С‡Рё', 'Р”\'РђР»Р°РјР±РµСЂ', 'Р›Р°Р±СѓС€РµСЂ'];
+            for (let i = 0; i < 50; i++) {
+                analyticsData.strategies.push({
+                    name: strategies[Math.floor(Math.random() * strategies.length)],
+                    profit: (Math.random() - 0.5) * 1000,
+                    sessions: Math.floor(Math.random() * 20) + 1,
+                    winRate: Math.random() * 100
+                });
+            }
+        }
+
+        function updateKPIs() {
+            const totalSpins = analyticsData.spins.length;
+            const activeCasinos = new Set(analyticsData.spins.map(s => s.casino)).size;
+            const accuracy = Math.floor(Math.random() * 30) + 60; // 60-90%
+            const effectiveStrategies = analyticsData.strategies.filter(s => s.profit > 0).length;
+            
+            // РћР±РЅРѕРІР»СЏРµРј Р·РЅР°С‡РµРЅРёСЏ
+            document.getElementById('totalSpinsKPI').textContent = totalSpins.toLocaleString();
+            document.getElementById('activeCasinosKPI').textContent = activeCasinos;
+            document.getElementById('accuracyKPI').textContent = accuracy + '%';
+            document.getElementById('strategiesKPI').textContent = effectiveStrategies;
+            
+            // Р”РѕР±Р°РІР»СЏРµРј РёР·РјРµРЅРµРЅРёСЏ (СЃРёРјСѓР»СЏС†РёСЏ)
+            document.getElementById('spinsChange').textContent = '+' + Math.floor(Math.random() * 15) + '%';
+            document.getElementById('casinosChange').textContent = '+' + Math.floor(Math.random() * 5) + '%';
+            document.getElementById('accuracyChange').textContent = '+' + Math.floor(Math.random() * 8) + '%';
+            document.getElementById('strategiesChange').textContent = '+' + Math.floor(Math.random() * 12) + '%';
+        }
+
+        function updatePatterns() {
+            // РђРЅР°Р»РёР·РёСЂСѓРµРј РіРѕСЂСЏС‡РёРµ Рё С…РѕР»РѕРґРЅС‹Рµ С‡РёСЃР»Р°
+            const numberFrequency = {};
+            
+            analyticsData.spins.forEach(spin => {
+                numberFrequency[spin.number] = (numberFrequency[spin.number] || 0) + 1;
+            });
+            
+            // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ С‡Р°СЃС‚РѕС‚Рµ
+            const sortedNumbers = Object.entries(numberFrequency)
+                .sort(([,a], [,b]) => b - a);
+            
+            // РћР±РЅРѕРІР»СЏРµРј РіРѕСЂСЏС‡РёРµ С‡РёСЃР»Р°
+            const hotNumbers = document.getElementById('hotNumbers');
+            hotNumbers.innerHTML = '';
+            sortedNumbers.slice(0, 5).forEach(([number, count]) => {
+                const percentage = ((count / analyticsData.spins.length) * 100).toFixed(1);
+                hotNumbers.innerHTML += `
+                    <li class="pattern-item">
+                        <span>${number}</span>
+                        <span class="pattern-probability">${percentage}%</span>
+                    </li>
+                `;
+            });
+            
+            // РћР±РЅРѕРІР»СЏРµРј С…РѕР»РѕРґРЅС‹Рµ С‡РёСЃР»Р°
+            const coldNumbers = document.getElementById('coldNumbers');
+            coldNumbers.innerHTML = '';
+            sortedNumbers.slice(-5).reverse().forEach(([number, count]) => {
+                const percentage = ((count / analyticsData.spins.length) * 100).toFixed(1);
+                coldNumbers.innerHTML += `
+                    <li class="pattern-item">
+                        <span>${number}</span>
+                        <span class="pattern-probability">${percentage}%</span>
+                    </li>
+                `;
+            });
+        }
+
+        function updateTables() {
+            updateCasinoTable();
+            updateStrategyTable();
+        }
+
+        function updateCasinoTable() {
+            const casinoStats = {};
+            
+            analyticsData.spins.forEach(spin => {
+                if (!casinoStats[spin.casino]) {
+                    casinoStats[spin.casino] = {
+                        total: 0,
+                        red: 0,
+                        black: 0,
+                        green: 0,
+                        lastSpin: spin.timestamp
+                    };
+                }
+                
+                casinoStats[spin.casino].total++;
+                casinoStats[spin.casino][spin.color]++;
+                
+                if (spin.timestamp > casinoStats[spin.casino].lastSpin) {
+                    casinoStats[spin.casino].lastSpin = spin.timestamp;
+                }
+            });
+            
+            const tbody = document.querySelector('#casinoStatsTable tbody');
+            tbody.innerHTML = '';
+            
+            Object.entries(casinoStats).forEach(([casino, stats]) => {
+                const lastSpinTime = new Date(stats.lastSpin).toLocaleTimeString();
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${casino}</td>
+                        <td>${stats.total}</td>
+                        <td>${stats.red}</td>
+                        <td>${stats.black}</td>
+                        <td>${stats.green}</td>
+                        <td>${lastSpinTime}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateStrategyTable() {
+            const strategyStats = {};
+            
+            analyticsData.strategies.forEach(strategy => {
+                if (!strategyStats[strategy.name]) {
+                    strategyStats[strategy.name] = {
+                        sessions: 0,
+                        totalProfit: 0,
+                        winRate: 0,
+                        roi: 0
+                    };
+                }
+                
+                strategyStats[strategy.name].sessions += strategy.sessions;
+                strategyStats[strategy.name].totalProfit += strategy.profit;
+                strategyStats[strategy.name].winRate += strategy.winRate;
+            });
+            
+            const tbody = document.querySelector('#strategyStatsTable tbody');
+            tbody.innerHTML = '';
+            
+            Object.entries(strategyStats).forEach(([name, stats]) => {
+                const avgWinRate = (stats.winRate / analyticsData.strategies.filter(s => s.name === name).length).toFixed(1);
+                const roi = ((stats.totalProfit / (stats.sessions * 100)) * 100).toFixed(1);
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${name}</td>
+                        <td>${stats.sessions}</td>
+                        <td>${stats.totalProfit.toFixed(2)}</td>
+                        <td>${avgWinRate}%</td>
+                        <td>${roi}%</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function createCharts() {
+            createTimeSeriesChart();
+            createColorDistributionChart();
+        }
+
+        function createTimeSeriesChart() {
+            const ctx = document.getElementById('timeSeriesChart').getContext('2d');
+            
+            // Р“СЂСѓРїРїРёСЂСѓРµРј СЃРїРёРЅС‹ РїРѕ С‡Р°СЃР°Рј
+            const hourlyData = {};
+            analyticsData.spins.forEach(spin => {
+                const hour = spin.timestamp.getHours();
+                hourlyData[hour] = (hourlyData[hour] || 0) + 1;
+            });
+            
+            const labels = [];
+            const data = [];
+            for (let i = 0; i < 24; i++) {
+                labels.push(i + ':00');
+                data.push(hourlyData[i] || 0);
+            }
+            
+            timeSeriesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'РЎРїРёРЅС‹ РїРѕ С‡Р°СЃР°Рј',
+                        data: data,
+                        borderColor: '#00ff88',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createColorDistributionChart() {
+            const ctx = document.getElementById('colorDistributionChart').getContext('2d');
+            
+            const colorCounts = {
+                red: 0,
+                black: 0,
+                green: 0
+            };
+            
+            analyticsData.spins.forEach(spin => {
+                colorCounts[spin.color]++;
+            });
+            
+            colorDistributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['РљСЂР°СЃРЅС‹Рµ', 'Р§РµСЂРЅС‹Рµ', 'Р—РµР»РµРЅС‹Рµ'],
+                    datasets: [{
+                        data: [colorCounts.red, colorCounts.black, colorCounts.green],
+                        backgroundColor: ['#e74c3c', '#2c3e50', '#27ae60'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff',
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            // РћР±СЂР°Р±РѕС‚С‡РёРє РёР·РјРµРЅРµРЅРёСЏ РІСЂРµРјРµРЅРЅРѕРіРѕ С„РёР»СЊС‚СЂР° СѓР¶Рµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РІ HTML
+        }
+
+        function updateAnalytics() {
+            const timeFilter = document.getElementById('timeFilter').value;
+            analyticsData.timeRange = timeFilter;
+            
+            console.log(`рџ“Љ РћР±РЅРѕРІР»РµРЅРёРµ Р°РЅР°Р»РёС‚РёРєРё РґР»СЏ РїРµСЂРёРѕРґР°: ${timeFilter}`);
+            
+            // Р—РґРµСЃСЊ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р»РѕРіРёРєР° С„РёР»СЊС‚СЂР°С†РёРё РґР°РЅРЅС‹С… РїРѕ РІСЂРµРјРµРЅРё
+            loadAnalyticsData();
+            
+            // РћР±РЅРѕРІР»СЏРµРј РіСЂР°С„РёРєРё
+            if (timeSeriesChart) {
+                timeSeriesChart.destroy();
+            }
+            if (colorDistributionChart) {
+                colorDistributionChart.destroy();
+            }
+            
+            createCharts();
+        }
+
+        function exportAnalytics() {
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                timeRange: analyticsData.timeRange,
+                summary: {
+                    totalSpins: analyticsData.spins.length,
+                    activeCasinos: new Set(analyticsData.spins.map(s => s.casino)).size,
+                    strategiesAnalyzed: analyticsData.strategies.length
+                },
+                spins: analyticsData.spins,
+                strategies: analyticsData.strategies
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], 
+                                { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rulettt_analytics_${new Date().getTime()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            console.log('рџ“¤ РђРЅР°Р»РёС‚РёРєР° СЌРєСЃРїРѕСЂС‚РёСЂРѕРІР°РЅР°');
+        }
+
+        function startRealTimeUpdates() {
+            // РћР±РЅРѕРІР»СЏРµРј РґР°РЅРЅС‹Рµ РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ
+            setInterval(() => {
+                if (Math.random() > 0.7) { // РЎРёРјСѓР»СЏС†РёСЏ РЅРѕРІС‹С… РґР°РЅРЅС‹С…
+                    addRandomSpin();
+                    updateKPIs();
+                    updatePatterns();
+                    updateTables();
+                }
+            }, 30000);
+        }
+
+        function addRandomSpin() {
+            const now = new Date();
+            const number = Math.floor(Math.random() * 37);
+            const casino = ['Stake', 'BC.Game', 'Roobet', 'Rollbit'][Math.floor(Math.random() * 4)];
+            
+            let color;
+            if (number === 0) {
+                color = 'green';
+            } else if ([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(number)) {
+                color = 'red';
+            } else {
+                color = 'black';
+            }
+            
+            analyticsData.spins.push({
+                timestamp: now,
+                number,
+                color,
+                casino
+            });
+            
+            console.log(`рџЋІ РќРѕРІС‹Р№ СЃРїРёРЅ РґРѕР±Р°РІР»РµРЅ: ${number} (${color}) - ${casino}`);
+        }
+
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р·Р°РІРµСЂС€РµРЅР°
+        console.log('рџ“Љ РЎРёСЃС‚РµРјР° СЂР°СЃС€РёСЂРµРЅРЅРѕР№ Р°РЅР°Р»РёС‚РёРєРё RULETTT РіРѕС‚РѕРІР°!');
+    </script>
+</body>
+</html>
+
